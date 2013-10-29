@@ -54,18 +54,22 @@ def main():
             imgur = factory.buildAPI()
             req = factory.buildRequestOAuthTokenSwap('pin', pin)
             res = imgur.retrieveRaw(req)
-            print("Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now.",
+            print("Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now." % (
                 res[1]['access_token'],
                 res[1]['refresh_token'],
                 res[1]['expires_in']
-            )
+            ))
 
     if action == 'refresh':
         token = sys.argv[2]
         imgur = factory.buildAPI()
         req = factory.buildRequestOAuthRefresh(token)
         res = imgur.retrieveRaw(req)
-        print(res[1])
+        print('Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now.' % (
+            res[1]['access_token'],
+            res[1]['refresh_token'],
+            res[1]['expires_in']
+        ))
         
     if action == 'upload-auth':
         (token, path) = sys.argv[2:]

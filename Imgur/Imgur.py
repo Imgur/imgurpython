@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import urllib.request, json
+from .Auth.Expired import Expired
 
 class Imgur:
     
@@ -17,10 +18,17 @@ class Imgur:
         return (req, res)
 
     def retrieve(self, request):
-        (req, res) = self.retrieveRaw(request)
+        try:
+            (req, res) = self.retrieveRaw(request)
+        except urllib.request.HTTPError as e:
+            if e.code == 403:
+                raise Expired()
+            else:
+                raise e
+
         self.ratelimit.update(req.info())
         if res['success'] is not True:
-            raise Exception(res['error'])
+            raise Exception(res['data']['error']['message'])
 
         return res['data']
 
