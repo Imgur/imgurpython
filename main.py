@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import json, sys
-import Imgur.Factory
+from Imgur.Factory import Factory
 
 def main():
     config = None
@@ -11,14 +11,17 @@ def main():
         sys.exit(1)
 
     try:
-        config = fd.read()
+        config = json.loads(fd.read())
     except:
         print("invalid json in config file.")
         sys.exit(1)
 
-    factory = Imgur.Factory(config)
-    auth = factory.createAuthorization('authorization')
-    imgur = factory.createAPI(auth)
+    factory = Factory(config)
+    auth = factory.buildAuth('anonymous')
+    imgur = factory.buildAPI(auth)
+    req = factory.buildRequest(('gallery', 'hot'))
+    res = imgur.retrieve(req)
+    # print(res)
     
 
 if __name__ == "__main__":
