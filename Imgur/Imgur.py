@@ -10,12 +10,15 @@ class Imgur:
         self.auth = auth
         self.ratelimit = ratelimit
 
-    def retrieve(self, request):
+    def retrieveRaw(self, request):
         request = self.auth.addAuthorizationHeader(request)
         req = urllib.request.urlopen(request)
-        self.ratelimit.update(req.info())
         res = json.loads(req.read().decode('utf-8'))
+        return (req, res)
 
+    def retrieve(self, request):
+        (req, res) = self.retrieveRaw(request)
+        self.ratelimit.update(req.info())
         if res['success'] is not True:
             raise Exception(res['error'])
 

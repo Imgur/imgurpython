@@ -12,20 +12,19 @@ class RateLimit:
     def update(self, headers):
         '''Update the rate limit state with a fresh API response'''
 
-        self.client_remaining = int(headers['X-RateLimit-ClientRemaining'])
-        self.user_remaining = int(headers['X-RateLimit-UserRemaining'])
-        self.user_reset = int(headers['X-RateLimit-UserReset'])
+        if 'X-RateLimit-ClientRemaining' in headers:
+            self.client_remaining = int(headers['X-RateLimit-ClientRemaining'])
+            self.user_remaining = int(headers['X-RateLimit-UserRemaining'])
+            self.user_reset = int(headers['X-RateLimit-UserReset'])
         
-    def is_over(self, time = None):
+    def is_over(self, time):
         return self.would_be_over(0, time)
         
-    def would_be_over(self, cost, time = None):
-        if time is None:
-            time = dt.time()
-
+    def would_be_over(self, cost):
         return self.client_remaining < cost or (self.user_reset is not None and self.user_reset > time and self.user_remaining < cost)
 
     def __str__(self, time = None):
+        # can't ask for time by DI when doing str(x).
         if time is None:
             time = dt.time()
 
