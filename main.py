@@ -29,6 +29,8 @@ def main():
         print("refresh [refresh-token]          Return a new OAuth access token after it's expired")
         print("upload-auth [token] [file]       Upload a file to your account")
         print("comment [token] [hash] [text]    Comment on a gallery image")
+        print("comments [token] [hash]          Get the comments (raw json) for a gallery item")
+        print("comment-id [token] [hash] [id]   Get a particular comment (raw json) for a gallery item")
         sys.exit(1)
 
     time = int(dt.time())
@@ -48,7 +50,7 @@ def main():
 
     if action == 'authorize':
         if len(sys.argv) == 2:
-            print("https://api.imgur.com/oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
+            print("https://" + factory.getAPIUrl() + "/oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
         if len(sys.argv) == 3:
             pin = sys.argv[2]
             imgur = factory.buildAPI()
@@ -97,6 +99,22 @@ def main():
         })
         res = imgur.retrieve(req)
         print("Success! https://www.imgur.com/gallery/%s/comment/%s" % (thash, res['id']))
+
+    if action == 'comments':
+        (token, thash) = sys.argv[2:4]
+        
+        imgur = factory.buildAPI()
+        req = factory.buildRequest(('gallery', thash, 'comments'))
+        res = imgur.retrieve(req)
+        print(res)
+
+    if action == 'comment-id':
+        (token, thash, cid) = sys.argv[2:5]
+        
+        imgur = factory.buildAPI()
+        req = factory.buildRequest(('gallery', thash, 'comments', cid))
+        res = imgur.retrieve(req)
+        print(res)
 
 if __name__ == "__main__":
     main()

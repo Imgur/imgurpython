@@ -12,6 +12,11 @@ class Factory:
 
     def __init__(self, config):
         self.config = config
+        if 'api' in self.config:
+            self.API_URL = self.config['api']
+
+    def getAPIUrl(self):
+        return self.API_URL
 
     def buildAPI(self, auth = None, ratelimit = None):
         if auth is None:
