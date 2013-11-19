@@ -20,17 +20,19 @@ def main():
     factory = Factory(config)
 
     if len(sys.argv) <= 1:
+        sep = '---------------------------------------------------------------------------------------------------------'
         print("Usage: python3 main.py (action) [options...]")
-        print("\nActions:\n")
+        print("\n" + sep + "\nUnauthorized Actions\n" + sep)
         print("upload [file]                    Anonymously upload a file")
+        print("comments [hash]                  Get the comments (raw json) for a gallery item")
+        print("comment-id [hash] [id]           Get a particular comment (raw json) for a gallery item")
         print("credits                          Inspect the rate limits for this client")
         print("authorize                        Get the authorization URL")
         print("authorize [pin]                  Get an access token")
-        print("refresh [refresh-token]          Return a new OAuth access token after it's expired")
+        print("\n" + sep + "\nAuthorized Actions\n" + sep)
         print("upload-auth [token] [file]       Upload a file to your account")
+        print("refresh [refresh-token]          Return a new OAuth access token after it's expired")
         print("comment [token] [hash] [text]    Comment on a gallery image")
-        print("comments [token] [hash]          Get the comments (raw json) for a gallery item")
-        print("comment-id [token] [hash] [id]   Get a particular comment (raw json) for a gallery item")
         sys.exit(1)
 
     time = int(dt.time())
@@ -50,7 +52,7 @@ def main():
 
     if action == 'authorize':
         if len(sys.argv) == 2:
-            print("https://" + factory.getAPIUrl() + "/oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
+            print("Visit this URL to get a PIN to authorize: " + factory.getAPIUrl() + "oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
         if len(sys.argv) == 3:
             pin = sys.argv[2]
             imgur = factory.buildAPI()
@@ -101,7 +103,7 @@ def main():
         print("Success! https://www.imgur.com/gallery/%s/comment/%s" % (thash, res['id']))
 
     if action == 'comments':
-        (token, thash) = sys.argv[2:4]
+        thash = sys.argv[2]
         
         imgur = factory.buildAPI()
         req = factory.buildRequest(('gallery', thash, 'comments'))
@@ -109,7 +111,7 @@ def main():
         print(res)
 
     if action == 'comment-id':
-        (token, thash, cid) = sys.argv[2:5]
+        (thash, cid) = sys.argv[2:4]
         
         imgur = factory.buildAPI()
         req = factory.buildRequest(('gallery', thash, 'comments', cid))
