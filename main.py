@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, sys, time as dt, pprint
+import json, sys, time as dt, pprint, urllib
 from Imgur.Factory import Factory
 from Imgur.Auth.Expired import Expired
 
@@ -57,7 +57,12 @@ def main():
             pin = sys.argv[2]
             imgur = factory.buildAPI()
             req = factory.buildRequestOAuthTokenSwap('pin', pin)
-            res = imgur.retrieveRaw(req)
+            try:
+                res = imgur.retrieveRaw(req)
+            except urllib.request.HTTPError as e:
+                print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
+                raise e
+                
             print("Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now." % (
                 res[1]['access_token'],
                 res[1]['refresh_token'],

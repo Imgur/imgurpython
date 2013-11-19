@@ -24,6 +24,7 @@ class Imgur:
             if e.code == 403:
                 raise Expired()
             else:
+                print("Error %d\n%s\n" % (e.code, e.read()))
                 raise e
 
         self.ratelimit.update(req.info())
