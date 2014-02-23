@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-import json, sys, time as dt, pprint, urllib
+import json, sys, time as dt, pprint
+try:
+    import urllib.request
+    from urllib.request import HTTPError
+except:
+    import urllib2 as urllib
+    from urllib2 import HTTPError
 from Imgur.Factory import Factory
 from Imgur.Auth.Expired import Expired
 
@@ -24,6 +30,7 @@ def main():
         print("Usage: python3 main.py (action) [options...]")
         print("\n" + sep + "\nUnauthorized Actions\n" + sep)
         print("upload [file]                    Anonymously upload a file")
+        print("album [id]                       View information about an album")
         print("comments [hash]                  Get the comments (raw json) for a gallery item")
         print("comment-id [hash] [id]           Get a particular comment (raw json) for a gallery item")
         print("credits                          Inspect the rate limits for this client")
@@ -59,7 +66,7 @@ def main():
             req = factory.buildRequestOAuthTokenSwap('pin', pin)
             try:
                 res = imgur.retrieveRaw(req)
-            except urllib.request.HTTPError as e:
+            except HTTPError as e:
                 print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
                 raise e
                 
@@ -112,6 +119,14 @@ def main():
         
         imgur = factory.buildAPI()
         req = factory.buildRequest(('gallery', thash, 'comments'))
+        res = imgur.retrieve(req)
+        print(res)
+
+    if action == 'album':
+        id = sys.argv[2]
+        
+        imgur = factory.buildAPI()
+        req = factory.buildRequest(('album', id))
         res = imgur.retrieve(req)
         print(res)
 
