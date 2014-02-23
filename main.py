@@ -24,6 +24,7 @@ def main():
         print("Usage: python3 main.py (action) [options...]")
         print("\n" + sep + "\nUnauthorized Actions\n" + sep)
         print("upload [file]                    Anonymously upload a file")
+        print("album [id]                       View information about an album")
         print("comments [hash]                  Get the comments (raw json) for a gallery item")
         print("comment-id [hash] [id]           Get a particular comment (raw json) for a gallery item")
         print("credits                          Inspect the rate limits for this client")
@@ -112,6 +113,14 @@ def main():
         
         imgur = factory.buildAPI()
         req = factory.buildRequest(('gallery', thash, 'comments'))
+        res = imgur.retrieve(req)
+        print(res)
+
+    if action == 'album':
+        id = sys.argv[2]
+        
+        imgur = factory.buildAPI()
+        req = factory.buildRequest(('album', id))
         res = imgur.retrieve(req)
         print(res)
 
