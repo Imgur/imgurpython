@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-import json, sys, time as dt, pprint, urllib
+import json, sys, time as dt, pprint
+try:
+    import urllib.request
+    from urllib.request import HTTPError
+except:
+    import urllib2 as urllib
+    from urllib2 import HTTPError
 from Imgur.Factory import Factory
 from Imgur.Auth.Expired import Expired
 
@@ -60,7 +66,7 @@ def main():
             req = factory.buildRequestOAuthTokenSwap('pin', pin)
             try:
                 res = imgur.retrieveRaw(req)
-            except urllib.request.HTTPError as e:
+            except HTTPError as e:
                 print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
                 raise e
                 
