@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
-import json, sys, time as dt, pprint, urllib
+import json, sys, time as dt, pprint
+
 from Imgur.Factory import Factory
 from Imgur.Auth.Expired import Expired
+
+try:
+    from urllib.request import urlopen as UrlLibOpen
+    from urllib.request import HTTPError
+except ImportError:
+    from urllib2 import urlopen as UrlLibOpen
+    from urllib2 import HTTPError
+
 
 def main():
     config = None
@@ -60,7 +69,7 @@ def main():
                 req = factory.build_request_oauth_token_swap('pin', pin)
                 try:
                     res = imgur.retrieve_raw(req)
-                except urllib.request.HTTPError as e:
+                except HTTPError as e:
                     print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
                     raise e
                     

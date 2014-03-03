@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 
-import urllib.request, json
+import json
+
+try:
+    from urllib.request import urlopen as UrlLibOpen
+    from urllib.request import HTTPError
+except ImportError:
+    from urllib2 import urlopen as UrlLibOpen
+    from urllib2 import HTTPError
+
 from .Auth.Expired import Expired
 
 class Imgur:
@@ -13,14 +21,14 @@ class Imgur:
 
     def retrieve_raw(self, request):
         request = self.auth.add_authorization_header(request)
-        req = urllib.request.urlopen(request)
+        req = UrlLibOpen(request)
         res = json.loads(req.read().decode('utf-8'))
         return (req, res)
 
     def retrieve(self, request):
         try:
             (req, res) = self.retrieve_raw(request)
-        except urllib.request.HTTPError as e:
+        except HTTPError as e:
             if e.code == 403:
                 raise Expired()
             else:

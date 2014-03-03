@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 
-import urllib.request, urllib.parse, base64, os.path, time as dt
+import base64, os.path, time as dt
+
+try:
+    from urllib.request import Request as UrlLibRequest
+    from urllib.parse import urlencode as UrlLibEncode
+except ImportError:
+    from urllib2 import Request as UrlLibRequest
+    from urllib import urlencode as UrlLibEncode
+    
 from .Imgur import Imgur
 from .RateLimit import RateLimit
 from .Auth.AccessToken import AccessToken
@@ -44,9 +52,9 @@ class Factory:
         else:
             url = self.API_URL + '3/' + ('/'.join(endpoint)) + ".json"
 
-        req = urllib.request.Request(url)
+        req = UrlLibRequest(url)
         if data is not None:
-            req.add_data(urllib.parse.urlencode(data).encode('utf-8'))
+            req.add_data(UrlLibEncode(data).encode('utf-8'))
         return req
     
     def build_rate_limit(self, limits = None):
