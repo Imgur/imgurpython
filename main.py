@@ -124,6 +124,14 @@ def main():
         res = imgur.retrieve(req)
         print(res)
 
+    if action == 'vote':
+        (token, thash, vote) = sys.argv[2:]
+        auth = factory.buildOAuth(token, None, time+3600)
+        imgur = factory.buildAPI(auth)
+        req = factory.buildRequest(('gallery', thash, 'vote', vote), {"vote": vote})
+        res = imgur.retrieve(req)
+        print(res)
+
     if action == 'comment-id':
         (thash, cid) = sys.argv[2:4]
         
