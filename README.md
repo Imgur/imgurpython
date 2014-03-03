@@ -8,6 +8,35 @@ You must [register](http://api.imgur.com/oauth2/addclient) your client with the 
 do *any* request to the API. If you want to perform actions on accounts, the user will have to authorize it through OAuth.
 The **secret** field is required for OAuth.
 
+Usage
+-----
+
+> Usage:  python main.py (action) [options...]
+> 
+> ---------------------------------------------------------------------------------------------------------
+> OAuth Actions
+> ---------------------------------------------------------------------------------------------------------
+> credits                          View the rate limit information for this client
+> authorize                        Get the authorization URL
+> authorize [pin]                  Get an access token
+> 
+> ---------------------------------------------------------------------------------------------------------
+> Unauthorized Actions
+> ---------------------------------------------------------------------------------------------------------
+> upload [file]                    Anonymously upload a file
+> album [id]                       View information about an album
+> list-comment [hash]              Get the comments (raw json) for a gallery item
+> comment-by-id [hash] [id]        Get a particular comment (raw json) for a gallery item
+> gallery [hash]                   View information about a gallery post
+> 
+> ---------------------------------------------------------------------------------------------------------
+> Authorized Actions
+> ---------------------------------------------------------------------------------------------------------
+> upload-auth [token] [file]       Upload a file to your account
+> refresh [refresh-token]          Return a new OAuth access token after it's expired
+> comment [token] [hash] [text]    Comment on a gallery image
+
+
 Config
 ------
 
