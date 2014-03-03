@@ -1,4 +1,5 @@
 {
     "client_id": "",
-    "secret": ""
+    "secret": "",
+    "token_store": {}
 }

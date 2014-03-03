@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import urllib.request, urllib.parse, base64, os.path
+import urllib.request, urllib.parse, base64, os.path, time as dt
 from .Imgur import Imgur
 from .RateLimit import RateLimit
 from .Auth.AccessToken import AccessToken
@@ -28,8 +28,12 @@ class Factory:
     def build_anonymous_auth(self):
         return Anonymous(self.config['client_id'])
 
-    def build_oauth(self, access, refresh, expire_time):
-        return AccessToken(access, refresh, expire_time)
+    def build_oauth(self, access, refresh, expire_time = None):
+        now = int(dt.time())
+        if expire_time is None:
+            return AccessToken(access, refresh, now)
+        else:
+            return AccessToken(access, refresh, expire_time)
 
     def build_request(self, endpoint, data = None):
         '''Expects an endpoint like 'image.json' or a tuple like ('gallery', 'hot', 'viral', '0'). 
