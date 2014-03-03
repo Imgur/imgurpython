@@ -74,7 +74,13 @@ def main():
         token = sys.argv[2]
         imgur = factory.build_api()
         req = factory.build_request_oauth_refresh(token)
-        res = imgur.retrieve_raw(req)
+
+        try:
+            res = imgur.retrieve_raw(req)
+        except urllib.request.HTTPError as e:
+            print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
+            raise e
+
         print('Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now.' % (
             res[1]['access_token'],
             res[1]['refresh_token'],
