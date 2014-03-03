@@ -40,26 +40,26 @@ def main():
     action = sys.argv[1]
 
     if action == 'upload':
-        imgur = factory.buildAPI()
-        req = factory.buildRequestUploadFromPath(sys.argv[2])
+        imgur = factory.build_api()
+        req = factory.build_request_upload_from_path(sys.argv[2])
         res = imgur.retrieve(req)
         print(res['link'])
 
     if action == 'credits':
-        imgur = factory.buildAPI()
-        req = factory.buildRequest(('credits',))
+        imgur = factory.build_api()
+        req = factory.build_request(('credits',))
         res = imgur.retrieve(req)
         print(res)
 
     if action == 'authorize':
         if len(sys.argv) == 2:
-            print("Visit this URL to get a PIN to authorize: " + factory.getAPIUrl() + "oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
+            print("Visit this URL to get a PIN to authorize: " + factory.get_api_url() + "oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
         if len(sys.argv) == 3:
             pin = sys.argv[2]
-            imgur = factory.buildAPI()
-            req = factory.buildRequestOAuthTokenSwap('pin', pin)
+            imgur = factory.build_api()
+            req = factory.build_request_oauth_token_swap('pin', pin)
             try:
-                res = imgur.retrieveRaw(req)
+                res = imgur.retrieve_raw(req)
             except urllib.request.HTTPError as e:
                 print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
                 raise e
@@ -72,9 +72,9 @@ def main():
 
     if action == 'refresh':
         token = sys.argv[2]
-        imgur = factory.buildAPI()
-        req = factory.buildRequestOAuthRefresh(token)
-        res = imgur.retrieveRaw(req)
+        imgur = factory.build_api()
+        req = factory.build_request_oauth_refresh(token)
+        res = imgur.retrieve_raw(req)
         print('Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now.' % (
             res[1]['access_token'],
             res[1]['refresh_token'],
@@ -83,9 +83,9 @@ def main():
         
     if action == 'upload-auth':
         (token, path) = sys.argv[2:]
-        auth = factory.buildOAuth(token, None, time+3600)
-        imgur = factory.buildAPI(auth)
-        req = factory.buildRequestUploadFromPath(path)
+        auth = factory.build_oauth(token, None, time+3600)
+        imgur = factory.build_api(auth)
+        req = factory.build_request_upload_from_path(path)
         try:
             res = imgur.retrieve(req)
             print(res['link'])
@@ -100,9 +100,9 @@ def main():
             print("Comment too long (trim by %d characters)." % (len(text) - 140))
             sys.exit(1)
 
-        auth = factory.buildOAuth(token, None, time+3600)
-        imgur = factory.buildAPI(auth)
-        req = factory.buildRequest(('gallery', thash, 'comment'), {
+        auth = factory.build_oauth(token, None, time+3600)
+        imgur = factory.build_api(auth)
+        req = factory.build_request(('gallery', thash, 'comment'), {
             'comment': text
         })
         res = imgur.retrieve(req)
@@ -111,24 +111,24 @@ def main():
     if action == 'comments':
         thash = sys.argv[2]
         
-        imgur = factory.buildAPI()
-        req = factory.buildRequest(('gallery', thash, 'comments'))
+        imgur = factory.build_api()
+        req = factory.build_request(('gallery', thash, 'comments'))
         res = imgur.retrieve(req)
         print(res)
 
     if action == 'album':
         id = sys.argv[2]
         
-        imgur = factory.buildAPI()
-        req = factory.buildRequest(('album', id))
+        imgur = factory.build_api()
+        req = factory.build_request(('album', id))
         res = imgur.retrieve(req)
         print(res)
 
     if action == 'comment-id':
         (thash, cid) = sys.argv[2:4]
         
-        imgur = factory.buildAPI()
-        req = factory.buildRequest(('gallery', thash, 'comments', cid))
+        imgur = factory.build_api()
+        req = factory.build_request(('gallery', thash, 'comments', cid))
         res = imgur.retrieve(req)
         print(res)
 

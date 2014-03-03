@@ -11,15 +11,15 @@ class Imgur:
         self.auth = auth
         self.ratelimit = ratelimit
 
-    def retrieveRaw(self, request):
-        request = self.auth.addAuthorizationHeader(request)
+    def retrieve_raw(self, request):
+        request = self.auth.add_authorization_header(request)
         req = urllib.request.urlopen(request)
         res = json.loads(req.read().decode('utf-8'))
         return (req, res)
 
     def retrieve(self, request):
         try:
-            (req, res) = self.retrieveRaw(request)
+            (req, res) = self.retrieve_raw(request)
         except urllib.request.HTTPError as e:
             if e.code == 403:
                 raise Expired()
@@ -33,11 +33,11 @@ class Imgur:
 
         return res['data']
 
-    def getRateLimit(self):
+    def get_rate_limit(self):
         return self.ratelimit
 
-    def getAuth(self):
+    def get_auth(self):
         return self.auth
     
-    def getClientID(self):
+    def get_client_id(self):
         return self.client_id

@@ -9,15 +9,15 @@ class AccessToken(AuthBase):
         self.refresh = refresh
         self.expire_time = expire_time
 
-    def needToAuthorize(self, time):
+    def need_to_authorize(self, time):
         return (self.expire_time <= time)
 
-    def addAuthorizationHeader(self, request):
+    def add_authorization_header(self, request):
         request.add_header('Authorization', 'Bearer ' + self.access)
         return request
 
-    def getAccessToken(self):
+    def get_access_token(self):
         return self.access
 
-    def getRefreshToken(self):
+    def get_refresh_token(self):
         return self.refresh
