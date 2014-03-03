@@ -28,6 +28,7 @@ def main():
         print("credits                          View the rate limit information for this client")
         print("authorize                        Get the authorization URL")
         print("authorize [pin]                  Get an access token")
+        print("refresh [refresh-token]          Return a new OAuth access token after it's expired")
         print("\n" + sep + "\nUnauthorized Actions\n" + sep)
         print("upload [file]                    Anonymously upload a file")
         print("album [id]                       View information about an album")
@@ -36,7 +37,6 @@ def main():
         print("gallery [hash]                   View information about a gallery post")
         print("\n" + sep + "\nAuthorized Actions\n" + sep)
         print("upload-auth [token] [file]       Upload a file to your account")
-        print("refresh [refresh-token]          Return a new OAuth access token after it's expired")
         print("comment [token] [hash] [text]    Comment on a gallery image")
         sys.exit(1)
 
