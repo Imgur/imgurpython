@@ -21,15 +21,16 @@ def main():
 
     if len(sys.argv) <= 1:
         sep = '---------------------------------------------------------------------------------------------------------'
-        print("Usage: python3 main.py (action) [options...]")
+        print("Usage: python main.py (action) [options...]")
         print("\n" + sep + "\nUnauthorized Actions\n" + sep)
         print("upload [file]                    Anonymously upload a file")
         print("album [id]                       View information about an album")
         print("comments [hash]                  Get the comments (raw json) for a gallery item")
         print("comment-id [hash] [id]           Get a particular comment (raw json) for a gallery item")
-        print("credits                          Inspect the rate limits for this client")
+        print("credits                          View the rate limit information for this client")
         print("authorize                        Get the authorization URL")
         print("authorize [pin]                  Get an access token")
+        print("gallery [hash]                    View information about a gallery post")
         print("\n" + sep + "\nAuthorized Actions\n" + sep)
         print("upload-auth [token] [file]       Upload a file to your account")
         print("refresh [refresh-token]          Return a new OAuth access token after it's expired")
@@ -39,37 +40,42 @@ def main():
     time = int(dt.time())
     action = sys.argv[1]
 
-    if action == 'upload':
+    authorized_actions = [
+        'upload-auth',
+        'refresh',
+        'comment'
+    ]
+
+    if action in authorized_actions:
+        handle_authorized_action(action)
+    else:
+        if action == 'authorize':
+            handle_authorize()
+        else:
+            handle_unauthorized_action(action)
+
+
+def authorize():
+    if len(sys.argv) == 2:
+        print("Visit this URL to get a PIN to authorize: " + factory.get_api_url() + "oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
+    if len(sys.argv) == 3:
+        pin = sys.argv[2]
         imgur = factory.build_api()
-        req = factory.build_request_upload_from_path(sys.argv[2])
-        res = imgur.retrieve(req)
-        print(res['link'])
+        req = factory.build_request_oauth_token_swap('pin', pin)
+        try:
+            res = imgur.retrieve_raw(req)
+        except urllib.request.HTTPError as e:
+            print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
+            raise e
+            
+        print("Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now." % (
+            res[1]['access_token'],
+            res[1]['refresh_token'],
+            res[1]['expires_in']
+        ))
 
-    if action == 'credits':
-        imgur = factory.build_api()
-        req = factory.build_request(('credits',))
-        res = imgur.retrieve(req)
-        print(res)
 
-    if action == 'authorize':
-        if len(sys.argv) == 2:
-            print("Visit this URL to get a PIN to authorize: " + factory.get_api_url() + "oauth2/authorize?client_id=" + config['client_id'] + "&response_type=pin")
-        if len(sys.argv) == 3:
-            pin = sys.argv[2]
-            imgur = factory.build_api()
-            req = factory.build_request_oauth_token_swap('pin', pin)
-            try:
-                res = imgur.retrieve_raw(req)
-            except urllib.request.HTTPError as e:
-                print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
-                raise e
-                
-            print("Access Token: %s\nRefresh Token: %s\nExpires: %d seconds from now." % (
-                res[1]['access_token'],
-                res[1]['refresh_token'],
-                res[1]['expires_in']
-            ))
-
+def handle_authorized_commands(action):
     if action == 'refresh':
         token = sys.argv[2]
         imgur = factory.build_api()
@@ -86,7 +92,7 @@ def main():
             res[1]['refresh_token'],
             res[1]['expires_in']
         ))
-        
+
     if action == 'upload-auth':
         (token, path) = sys.argv[2:]
         auth = factory.build_oauth(token, None, time+3600)
@@ -114,10 +120,29 @@ def main():
         res = imgur.retrieve(req)
         print("Success! https://www.imgur.com/gallery/%s/comment/%s" % (thash, res['id']))
 
-    if action == 'comments':
+    if action == 'gallery':
+        imgur = factory.build_api()
+        req = factory.build_request(('gallery', id))
+        res = imgur.retrieve(req)
+        print(res)
+
+
+def handle_unauthorized_commands():
+    imgur = factory.build_api()
+
+    if action == 'upload':
+        req = factory.build_request_upload_from_path(sys.argv[2])
+        res = imgur.retrieve(req)
+        print(res['link'])
+
+    if action == 'credits':
+        req = factory.build_request(('credits',))
+        res = imgur.retrieve(req)
+        print(res)
+
+    if action == 'list-comment':
         thash = sys.argv[2]
         
-        imgur = factory.build_api()
         req = factory.build_request(('gallery', thash, 'comments'))
         res = imgur.retrieve(req)
         print(res)
@@ -125,7 +150,6 @@ def main():
     if action == 'album':
         id = sys.argv[2]
         
-        imgur = factory.build_api()
         req = factory.build_request(('album', id))
         res = imgur.retrieve(req)
         print(res)
@@ -138,13 +162,13 @@ def main():
         res = imgur.retrieve(req)
         print(res)
 
-    if action == 'comment-id':
+    if action == 'comment-by-id':
         (thash, cid) = sys.argv[2:4]
         
-        imgur = factory.build_api()
         req = factory.build_request(('gallery', thash, 'comments', cid))
         res = imgur.retrieve(req)
         print(res)
+
 
 if __name__ == "__main__":
     main()
