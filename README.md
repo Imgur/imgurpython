@@ -12,36 +12,51 @@ Usage
 -----
 
 > Usage:  python main.py (action) [options...]
-> 
+>
 > ### OAuth Actions
->
-> **credits**                      View the rate limit information for this client
->
-> **authorize**                        Get the authorization URL
->
-> **authorize** [pin]                  Get an access token
->
-> **refresh** [refresh-token]          Return a new OAuth access token after it's expired
 > 
+> **credits**                                   
+> View the rate limit information for this client
+>
+> **authorize**                                 
+> Start the authorization process
+>
+> **authorize [pin]**                           
+> Get an access token after starting authorization
+>
+> **refresh [refresh-token]**                   
+> Return a new OAuth access token after it's expired
+>
 > ### Unauthorized Actions
->
-> **upload** [file]                    Anonymously upload a file
->
-> **album** [id]                       View information about an album
->
-> **list-comment** [hash]              Get the comments (raw json) for a gallery item
->
-> **comment-by-id** [hash] [id]        Get a particular comment (raw json) for a gallery item
->
-> **gallery** [hash]                   View information about a gallery post
 > 
+> **upload [file]**                             
+> Anonymously upload a file
 >
+> **list-comments [hash]**                      
+> Get the comments (raw JSON) for a gallery post
+>
+> **get-album [id]**                            
+> Get information (raw JSON) about an album
+>
+> **get-comment [id]**                          
+> Get a particular comment (raw JSON) for a gallery comment
+>
+> **get-gallery [hash]**                        
+> Get information (raw JSON) about a gallery post
+> 
 > ### Authorized Actions
+> 
+> **upload-auth [access-token]**                
+> Upload a file to your account
 >
-> **upload-auth** [token] [file]       Upload a file to your account
+> **comment [access-token] [hash] [text ...]**  
+> Comment on a gallery post
 >
-> **comment** [token] [hash] [text]    Comment on a gallery image
+> **vote-gallery [token] [hash] [direction]**   
+> Vote on a gallery post. Direction either 'up', 'down', or 'veto'
 >
+> **vote-comment [token] [id] [direction]**     
+> Vote on a gallery comment. Direction either 'up', 'down', or 'veto'
 
 Config
 ------
