@@ -117,7 +117,6 @@ def main():
 
     authorized_commands = [
         'upload-auth',
-        'refresh',
         'comment',
         'vote-gallery',
         'vote-comment'
@@ -197,7 +196,7 @@ def handle_oauth_commands(factory, config, action):
 
         try:
             res = imgur.retrieve_raw(req)
-        except urllib.request.HTTPError as e:
+        except HTTPError as e:
             print("Error %d\n%s" % (e.code, e.read().decode('utf8')))
             raise e
 
