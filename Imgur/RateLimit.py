@@ -20,7 +20,7 @@ class RateLimit:
     def is_over(self, time):
         return self.would_be_over(0, time)
         
-    def would_be_over(self, cost):
+    def would_be_over(self, cost, time):
         return self.client_remaining < cost or (self.user_reset is not None and self.user_reset > time and self.user_remaining < cost)
 
     def __str__(self, time = None):
