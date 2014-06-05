@@ -251,6 +251,7 @@ def handle_unauthorized_commands(factory, action):
 
         if action == 'get-gallery':
             imgur = factory.build_api()
+            id = sys.argv[2]
             req = factory.build_request(('gallery', id))
 
         res = imgur.retrieve(req)
