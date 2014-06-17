@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import json, sys, time as dt, pprint, math
 
-from Imgur.Factory import Factory
-from Imgur.Auth.Expired import Expired
+from imgur.factory import factory
+from imgur.auth.expired import expired
 
 try:
     from urllib.request import urlopen as UrlLibOpen
@@ -99,7 +99,7 @@ def main():
 
     config = None
     try:
-        fd = open('config.json', 'r')
+        fd = open('data/config.json', 'r')
     except:
         print("config file [config.json] not found.")
         sys.exit(1)
@@ -110,7 +110,7 @@ def main():
         print("invalid json in config file.")
         sys.exit(1)
 
-    factory = Factory(config)
+    mfactory = factory(config)
 
 
     action = sys.argv[1]
@@ -129,12 +129,12 @@ def main():
     ]
 
     if action in authorized_commands:
-        handle_authorized_commands(factory, action)
+        handle_authorized_commands(mfactory, action)
     else:
         if action in oauth_commands:
-            handle_oauth_commands(factory, config, action)
+            handle_oauth_commands(mfactory, config, action)
         else:
-            handle_unauthorized_commands(factory, action)
+            handle_unauthorized_commands(mfactory, action)
 
 def handle_authorized_commands(factory, action):
     token = sys.argv[2]
@@ -177,7 +177,7 @@ def handle_authorized_commands(factory, action):
                 print("Success! https://www.imgur.com/gallery/%s/comment/%s" % (thash, res['id']))
             else:
                 print(res)
-    except Expired:
+    except expired:
         print("Expired access token")
 
 

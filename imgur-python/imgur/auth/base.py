@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-class Base:
+class base:
     def need_to_authorize(self, time):
         '''Do we need to refresh our authorization token?'''
         pass

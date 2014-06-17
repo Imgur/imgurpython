@@ -9,9 +9,9 @@ except ImportError:
     from urllib2 import urlopen as UrlLibOpen
     from urllib2 import HTTPError
 
-from .Auth.Expired import Expired
+from .auth.expired import expired
 
-class Imgur:
+class imgur:
     
     def __init__(self, client_id, secret, auth, ratelimit):
         self.client_id = client_id
@@ -30,7 +30,7 @@ class Imgur:
             (req, res) = self.retrieve_raw(request)
         except HTTPError as e:
             if e.code == 403:
-                raise Expired()
+                raise expired()
             else:
                 print("Error %d\n%s\n" % (e.code, e.read()))
                 raise e

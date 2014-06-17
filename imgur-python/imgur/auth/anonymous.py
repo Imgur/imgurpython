@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-class Anonymous:
+class anonymous:
     def __init__(self, client_id):
         self.client_id = client_id
 

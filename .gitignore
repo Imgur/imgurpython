@@ -2,3 +2,5 @@
 *.swo
 *.pyc
 config.json
+dist
+imgur_python.egg-_info

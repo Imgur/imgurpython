@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-from .Base import Base as AuthBase
+from .base import base as authbase
 import time as dt
 
-class AccessToken(AuthBase):
+class accesstoken(authbase):
+
     def __init__(self,  access, refresh, expire_time):
         self.access = access
         self.refresh = refresh

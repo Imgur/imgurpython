@@ -2,7 +2,7 @@
 
 import time as dt
 
-class RateLimit:
+class ratelimit:
 
     def __init__(self, client_remaining = 12500, user_remaining = 500, user_reset = None):
         self.client_remaining = client_remaining
