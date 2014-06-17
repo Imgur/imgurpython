@@ -11,7 +11,7 @@ The **secret** field is required for OAuth.
 Installation
 ------------
 
-    pip install imgur-python
+    pip install imgurpython
 
 Usage
 -----

@@ -3,4 +3,5 @@
 *.pyc
 config.json
 dist
-imgur_python.egg-_info
+build
+imgurpython.egg-info
