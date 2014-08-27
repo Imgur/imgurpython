@@ -219,11 +219,10 @@ def handle_unauthorized_commands(factory, action):
             req = factory.build_request(('album', id))
 
         if action == 'get-comment':
-            (item_hash, cid) = sys.argv[2:4]
-            req = factory.build_request(('gallery', item_hash, 'comments', cid))
+            cid = sys.argv[2]
+            req = factory.build_request(('comment', cid))
 
         if action == 'get-gallery':
-            imgur = factory.build_api()
             id = sys.argv[2]
             req = factory.build_request(('gallery', id))
 
