@@ -43,6 +43,7 @@ def usage(argv):
         lines.append(('auth', 'comment [access-token] [hash] [text ...]', 'Comment on a gallery post'))
         lines.append(('auth', 'vote-gallery [token] [hash] [direction]', 'Vote on a gallery post. Direction either \'up\', \'down\', or \'veto\''))
         lines.append(('auth', 'vote-comment [token] [id] [direction]', 'Vote on a gallery comment. Direction either \'up\', \'down\', or \'veto\''))
+        lines.append(('auth', 'add-album-image [access-token] [album-id] [image-id]', 'Add an image to an album'))
 
         headers = {
             'oauth': 'OAuth Actions',
@@ -119,7 +120,8 @@ def main():
         'upload-auth',
         'comment',
         'vote-gallery',
-        'vote-comment'
+        'vote-comment',
+        'add-album-image'
     ]
 
     oauth_commands = [
@@ -156,6 +158,14 @@ def handle_authorized_commands(factory, action):
         req = factory.build_request(('gallery', thash, 'comment'), {
             'comment': text
         })
+
+    if action == 'add-album-image':
+        album_id = sys.argv[3]
+        image_ids = ','.join(sys.argv[4:])
+
+        req = factory.build_request(('album', album_id), {
+            'ids[]': image_ids
+        }, 'PUT')
 
     if action == 'vote-gallery' or action == 'vote-comment':
         (tid, vote) = sys.argv[3:]
