@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
-class anonymous:
+from .base import Base as AuthBase
+
+
+class Anonymous(AuthBase):
     def __init__(self, client_id):
         self.client_id = client_id
 
-    def need_to_authorize(self):
+    def need_to_authorize(self, time):
         return False
 
-    def authorize(self):
+    def authorize(self, api, request_factory):
         pass
 
     def add_authorization_header(self, request):
-        request.add_header('Authorization', 'Client-ID ' + self.client_id)
+        request.add_header('Authorization', 'Client-ID %s' % self.client_id)
         return request
