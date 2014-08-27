@@ -43,7 +43,7 @@ class factory:
         else:
             return accesstoken(access, refresh, expire_time)
 
-    def build_request(self, endpoint, data = None):
+    def build_request(self, endpoint, data = None, method = None):
         '''Expects an endpoint like 'image.json' or a tuple like ('gallery', 'hot', 'viral', '0'). 
         
         Prepends 3/ and appends \.json to the tuple-form, not the endpoint form.'''
@@ -55,6 +55,10 @@ class factory:
         req = UrlLibRequest(url)
         if data is not None:
             req.add_data(UrlLibEncode(data).encode('utf-8'))
+
+        if method is not None:
+            # python urllib2 is broken... http://stackoverflow.com/a/111988
+            req.get_method = lambda: method
         return req
     
     def build_rate_limit(self, limits = None):
