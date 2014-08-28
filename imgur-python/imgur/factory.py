@@ -47,6 +47,24 @@ class Factory:
         else:
             return AccessToken(access, refresh, expire_time)
 
+    def build_get_request(self, endpoint, urlparams=None):
+        if isinstance(endpoint, str):
+            url = self.API_URL + endpoint
+        else:
+            url = self.API_URL + '3/' + ('/'.join(endpoint)) + ".json"
+        
+        if urlparams is not None:
+            req = urllibrequest(url + '?' + urllibencode(urlparams))
+        else:
+            req = urllibrequest(url)
+
+        return req
+
+    def build_put_request(self, endpoint, data=None):
+        self.build_request(self, endpoint, data, 'PUT')
+    def build_post_request(self, endpoint, data=None):
+        self.build_request(self, endpoint, data, 'POST')
+
     def build_request(self, endpoint, data=None, method=None):
         """Expects an endpoint like 'image.json' or a tuple like ('gallery', 'hot', 'viral', '0').
         Prepends 3/ and appends \.json to the tuple-form, not the endpoint form."""

@@ -19,7 +19,8 @@ authorized_commands = [
     'comment',
     'vote-gallery',
     'vote-comment',
-    'add-album-image'
+    'add-album-image',
+    'replies'
 ]
 
 oauth_commands = [
@@ -130,14 +131,14 @@ def handle_authorized_commands(factory, action):
             print('Comment too long (trim by %d characters).' % (len(text) - 140))
             sys.exit(1)
 
-        req = factory.build_request(('gallery', item_hash, 'comment'), {
+        req = factory.build_post_request(('gallery', item_hash, 'comment'), {
             'comment': text
         })
     elif action == 'add-album-image':
         album_id = sys.argv[3]
         image_ids = ','.join(sys.argv[4:])
 
-        req = factory.build_request(('album', album_id), {
+        req = factory.build_put_request(('album', album_id), {
             'ids[]': image_ids
         }, 'PUT')
 
@@ -149,7 +150,9 @@ def handle_authorized_commands(factory, action):
         else:
             target = ('comment', target_id, 'vote', vote)
 
-        req = factory.build_request(target, "")
+        req = factory.build_get_request(target, "")
+    elif action == 'replies':
+        req = factory.build_get_request(('account', 'me', 'notifications', 'replies'), {'new': 'false'})
 
     try:
         res = imgur.retrieve(req)
@@ -169,7 +172,7 @@ def handle_oauth_commands(factory, config, action):
     imgur = factory.build_api()
 
     if action == 'credits':
-        req = factory.build_request(('credits',))
+        req = factory.build_get_request(('credits',))
         res = imgur.retrieve(req)
         print(res)
     elif action == 'refresh':
@@ -222,19 +225,19 @@ def handle_unauthorized_commands(factory, action):
     else:
         if action == 'list-comments':
             item_hash = sys.argv[2]
-            req = factory.build_request(('gallery', item_hash, 'comments'))
+            req = factory.build_get_request(('gallery', item_hash, 'comments'))
 
         if action == 'get-album':
             id = sys.argv[2]
-            req = factory.build_request(('album', id))
+            req = factory.build_get_request(('album', id))
 
         if action == 'get-comment':
             cid = sys.argv[2]
-            req = factory.build_request(('comment', cid))
+            req = factory.build_get_request(('comment', cid))
 
         if action == 'get-gallery':
             id = sys.argv[2]
-            req = factory.build_request(('gallery', id))
+            req = factory.build_get_request(('gallery', id))
 
         res = imgur.retrieve(req)
         print(res)
