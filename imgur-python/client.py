@@ -1,5 +1,8 @@
 import requests
 from helpers.error import ImgurClientError
+from imgur.models.account import Account
+from imgur.models.gallery_album import GalleryAlbum
+from imgur.models.gallery_image import GalleryImage
 
 API_URL = 'https://api.imgur.com/'
 
@@ -79,9 +82,34 @@ class ImgurClient:
         try:
             response_data = response.json()
 
-            if 'data' in response_data and 'error' in response_data['data']:
-                raise ImgurClientError(response_data['data'], response.status_code)
+            if 'error' in response_data['data']:
+                raise ImgurClientError(response_data['data']['error'], response.status_code)
         except:
             raise ImgurClientError('JSON decoding of response failed.')
 
         return response_data['data']
+
+    def validate_user_context(self, username):
+        if username == 'me' and self.auth is None:
+            raise ImgurClientError('\'me\' can only be used in the authenticated context.')
+
+    # Account-related endpoints
+    def get_account(self, username):
+        self.validate_user_context(username)
+        account_data = self.make_request('GET', 'account/%s' % username)
+
+        return Account(
+            account_data['id'],
+            account_data['url'],
+            account_data['bio'],
+            account_data['reputation'],
+            account_data['created'],
+            account_data['pro_expiration'],
+        )
+
+    def get_gallery_favorites(self, username):
+        self.validate_user_context(username)
+        favorites = self.make_request('GET', 'account/%s/gallery_favorites' % username)
+
+        result = [GalleryImage(favorite) for favorite in favorites]
+        return result
