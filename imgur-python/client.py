@@ -116,6 +116,6 @@ class ImgurClient:
             if favorite['is_album']:
                 result.append(GalleryAlbum(favorite))
             else:
-                result.append(GalleryAlbum(favorite))
+                result.append(GalleryImage(favorite))
 
         return result
