@@ -111,5 +111,11 @@ class ImgurClient:
         self.validate_user_context(username)
         favorites = self.make_request('GET', 'account/%s/gallery_favorites' % username)
 
-        result = [GalleryImage(favorite) for favorite in favorites]
+        result = []
+        for favorite in favorites:
+            if favorite['is_album']:
+                result.append(GalleryAlbum(favorite))
+            else:
+                result.append(GalleryAlbum(favorite))
+
         return result
