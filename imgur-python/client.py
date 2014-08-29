@@ -1,8 +1,12 @@
 import requests
-from helpers.error import ImgurClientError
+from imgur.models.album import Album
+from imgur.models.image import Image
 from imgur.models.account import Account
+from imgur.models.comment import Comment
+from helpers.error import ImgurClientError
 from imgur.models.gallery_album import GalleryAlbum
 from imgur.models.gallery_image import GalleryImage
+from imgur.models.account_settings import AccountSettings
 
 API_URL = 'https://api.imgur.com/'
 
@@ -79,19 +83,36 @@ class ImgurClient:
             header = self.prepare_headers()
             response = method_to_call(url, headers=header, data=data)
 
+        # TODO: Add rate-limit checks
+
         try:
             response_data = response.json()
-
-            if 'error' in response_data['data']:
-                raise ImgurClientError(response_data['data']['error'], response.status_code)
         except:
             raise ImgurClientError('JSON decoding of response failed.')
+
+        if isinstance(response_data['data'], dict) and 'error' in response_data['data']:
+            raise ImgurClientError(response_data['data']['error'], response.status_code)
 
         return response_data['data']
 
     def validate_user_context(self, username):
         if username == 'me' and self.auth is None:
             raise ImgurClientError('\'me\' can only be used in the authenticated context.')
+
+    def logged_in(self):
+        if self.auth is None:
+            raise ImgurClientError('Must be logged in to complete request.')
+
+    @staticmethod
+    def build_gallery_images_and_albums(items):
+        result = []
+        for item in items:
+            if item['is_album']:
+                result.append(GalleryAlbum(item))
+            else:
+                result.append(GalleryImage(item))
+
+        return result
 
     # Account-related endpoints
     def get_account(self, username):
@@ -109,13 +130,95 @@ class ImgurClient:
 
     def get_gallery_favorites(self, username):
         self.validate_user_context(username)
-        favorites = self.make_request('GET', 'account/%s/gallery_favorites' % username)
+        gallery_favorites = self.make_request('GET', 'account/%s/gallery_favorites' % username)
 
-        result = []
-        for favorite in favorites:
-            if favorite['is_album']:
-                result.append(GalleryAlbum(favorite))
-            else:
-                result.append(GalleryImage(favorite))
+        return self.build_gallery_images_and_albums(gallery_favorites)
 
-        return result
+    def get_account_favorites(self, username):
+        self.validate_user_context(username)
+        favorites = self.make_request('GET', 'account/%s/favorites' % username)
+
+        return self.build_gallery_images_and_albums(favorites)
+
+    def get_account_submissions(self, username, page=0):
+        self.validate_user_context(username)
+        submissions = self.make_request('GET', 'account/%s/submissions/%d' % (username, page))
+
+        return self.build_gallery_images_and_albums(submissions)
+
+    def get_account_settings(self, username):
+        self.logged_in()
+        settings = self.make_request('GET', 'account/%s/settings' % username)
+
+        return AccountSettings(
+            settings['email'],
+            settings['high_quality'],
+            settings['public_images'],
+            settings['album_privacy'],
+            settings['pro_expiration'],
+            settings['accepted_gallery_terms'],
+            settings['active_emails'],
+            settings['messaging_enabled'],
+            settings['blocked_users']
+        )
+
+    def change_account_settings(self, username, fields):
+        allowed_fields = {
+            'bio', 'public_images', 'messaging_enabled', 'album_privacy', 'accepted_gallery_terms', 'username'
+        }
+
+        post_data = {setting: fields[setting] for setting in set(allowed_fields).intersection(fields.keys())}
+
+        return self.make_request('POST', 'account/%s/settings' % username, post_data)
+
+    def get_email_verification_status(self, username):
+        self.logged_in()
+        self.validate_user_context(username)
+        return self.make_request('GET', 'account/%s/verifyemail' % username)
+
+    def send_verification_email(self, username):
+        self.logged_in()
+        self.validate_user_context(username)
+        return self.make_request('POST', 'account/%s/verifyemail' % username)
+
+    def get_account_albums(self, username, page=0):
+        self.validate_user_context(username)
+
+        albums = self.make_request('GET', 'account/%s/albums/%d' % (username, page))
+        return [Album(album) for album in albums]
+
+    def get_account_album_ids(self, username, page=0):
+        self.validate_user_context(username)
+        return self.make_request('GET', 'account/%s/albums/ids/%d' %  (username, page))
+
+    def get_account_album_count(self, username):
+        self.validate_user_context(username)
+        return self.make_request('GET', 'account/%s/albums/count' % username)
+
+    def get_account_comments(self, username, sort='newest', page=0):
+        self.validate_user_context(username)
+        comments = self.make_request('GET', 'account/%s/comments/%s/%s' % (username, sort, page))
+
+        return [Comment(comment) for comment in comments]
+
+    def get_account_comment_ids(self, username, sort='newest', page=0):
+        self.validate_user_context(username)
+        return self.make_request('GET', 'account/%s/comments/ids/%s/%s' % (username, sort, page))
+
+    def get_account_comment_count(self, username):
+        self.validate_user_context(username)
+        return self.make_request('GET', 'account/%s/comments/count' % username)
+
+    def get_account_images(self, username, page=0):
+        self.validate_user_context(username)
+        images = self.make_request('GET', 'account/%s/images/%d' % (username, page))
+
+        return [Image(image) for image in images]
+
+    def get_account_image_ids(self, username, page=0):
+        self.validate_user_context(username)
+        return self.make_request('GET', 'account/%s/images/ids/%d' % (username, page))
+
+    def get_account_images_count(self, username, page=0):
+        self.validate_user_context(username)
+        return self.make_request('GET', 'account/%s/images/ids/%d' % (username, page))
