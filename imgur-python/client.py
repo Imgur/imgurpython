@@ -48,6 +48,9 @@ class AuthWrapper:
 
 
 class ImgurClient:
+    allowed_album_fields = {
+        'ids', 'title', 'description', 'privacy', 'layout', 'cover'
+    }
 
     def __init__(self, client_id=None, client_secret=None, access_token=None, refresh_token=None):
         self.client_id = client_id
@@ -76,12 +79,18 @@ class ImgurClient:
         header = self.prepare_headers()
         url = API_URL + '3/%s' % route
 
-        response = method_to_call(url, headers=header, data=data)
+        if method == 'delete':
+            response = method_to_call(url, headers=header, params=data)
+        else:
+            response = method_to_call(url, headers=header, data=data)
 
         if response.status_code == 403 and self.auth is not None:
             self.auth.refresh()
             header = self.prepare_headers()
-            response = method_to_call(url, headers=header, data=data)
+            if method == 'delete':
+                response = method_to_call(url, headers=header, params=data)
+            else:
+                response = method_to_call(url, headers=header, data=data)
 
         # TODO: Add rate-limit checks
 
@@ -222,3 +231,52 @@ class ImgurClient:
     def get_account_images_count(self, username, page=0):
         self.validate_user_context(username)
         return self.make_request('GET', 'account/%s/images/ids/%d' % (username, page))
+
+    def get_album(self, album_id):
+        album = self.make_request('GET', 'album/%s' % album_id)
+        return Album(album)
+
+    def get_album_images(self, album_id):
+        images = self.make_request('GET', 'album/%s/images' % album_id)
+        return [Image(image) for image in images]
+
+    def create_album(self, fields):
+        post_data = {field: fields[field] for field in set(self.allowed_album_fields).intersection(fields.keys())}
+
+        if 'ids' in post_data:
+            self.logged_in()
+
+        return self.make_request('POST', 'album', data=post_data)
+
+    def update_album(self, album_id, fields):
+        post_data = {field: fields[field] for field in set(self.allowed_album_fields).intersection(fields.keys())}
+
+        if isinstance(post_data['ids'], list):
+            post_data['ids'] = ','.join(post_data['ids'])
+
+        return self.make_request('POST', 'album/%s' % album_id, data=post_data)
+
+    def album_delete(self, album_id):
+        return self.make_request('DELETE', 'album/%s' % album_id)
+
+    def album_favorite(self, album_id):
+        self.logged_in()
+        return self.make_request('POST', 'album/%s/favorite' % album_id)
+
+    def album_set_images(self, album_id, ids):
+        if isinstance(ids, list):
+            ids = ','.join(ids)
+
+        return self.make_request('POST', 'album/%s/' % album_id, {'ids': ids})
+
+    def album_add_images(self, album_id, ids):
+        if isinstance(ids, list):
+            ids = ','.join(ids)
+
+        return self.make_request('POST', 'album/%s/add' % album_id, {'ids': ids})
+
+    def album_remove_images(self, album_id, ids):
+        if isinstance(ids, list):
+            ids = ','.join(ids)
+
+        return self.make_request('DELETE', 'album/%s/remove_images' % album_id, {'ids': ids})
