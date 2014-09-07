@@ -301,6 +301,7 @@ class ImgurClient:
         return replies
 
     def post_comment_reply(self, comment_id, image_id, comment):
+        self.logged_in()
         data = {
             'image_id': image_id,
             'comment': comment
@@ -309,9 +310,11 @@ class ImgurClient:
         return self.make_request('POST', 'comment/%d' % comment_id, data)
 
     def comment_vote(self, comment_id, vote, toggle=True):
+        self.logged_in()
         toggle_behavior = 1 if toggle else 0
 
         return self.make_request('POST', 'comment/%d/vote/%s?toggle=%d' % (comment_id, vote, toggle_behavior))
 
     def comment_report(self, comment_id):
+        self.logged_in()
         return self.make_request('POST', 'comment/%d/report' % comment_id)
