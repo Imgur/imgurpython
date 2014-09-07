@@ -4,6 +4,7 @@ from imgur.models.image import Image
 from imgur.models.account import Account
 from imgur.models.comment import Comment
 from helpers.error import ImgurClientError
+from helpers.format import build_comment_tree
 from imgur.models.gallery_album import GalleryAlbum
 from imgur.models.gallery_image import GalleryImage
 from imgur.models.account_settings import AccountSettings
@@ -92,7 +93,9 @@ class ImgurClient:
             else:
                 response = method_to_call(url, headers=header, data=data)
 
-        # TODO: Add rate-limit checks
+        # Rate-limit check
+        if response.status_code == 429:
+            raise ImgurClientError('Rate-limit exceeded!')
 
         try:
             response_data = response.json()
@@ -232,6 +235,7 @@ class ImgurClient:
         self.validate_user_context(username)
         return self.make_request('GET', 'account/%s/images/ids/%d' % (username, page))
 
+    # Album-related endpoints
     def get_album(self, album_id):
         album = self.make_request('GET', 'album/%s' % album_id)
         return Album(album)
@@ -280,3 +284,34 @@ class ImgurClient:
             ids = ','.join(ids)
 
         return self.make_request('DELETE', 'album/%s/remove_images' % album_id, {'ids': ids})
+
+    # Comment-related endpoints
+    def get_comment(self, comment_id):
+        comment = self.make_request('GET', 'comment/%d' % comment_id)
+        return Comment(comment)
+
+    def delete_comment(self, comment_id):
+        self.logged_in()
+        return self.make_request('DELETE', 'comment/%d' % comment_id)
+
+    def get_comment_replies(self, comment_id):
+        replies = self.make_request('GET', 'comment/%d/replies' % comment_id)
+        replies['children'] = build_comment_tree(replies['children'])
+
+        return replies
+
+    def post_comment_reply(self, comment_id, image_id, comment):
+        data = {
+            'image_id': image_id,
+            'comment': comment
+        }
+
+        return self.make_request('POST', 'comment/%d' % comment_id, data)
+
+    def comment_vote(self, comment_id, vote, toggle=True):
+        toggle_behavior = 1 if toggle else 0
+
+        return self.make_request('POST', 'comment/%d/vote/%s?toggle=%d' % (comment_id, vote, toggle_behavior))
+
+    def comment_report(self, comment_id):
+        return self.make_request('POST', 'comment/%d/report' % comment_id)
