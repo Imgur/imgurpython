@@ -17,7 +17,7 @@ except ImportError:
 
 
 class Factory:
-    API_URL = "https://api.imgur.com/"
+    API_URL = 'https://api.imgur.com/'
 
     def __init__(self, config):
         self.config = config
