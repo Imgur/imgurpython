@@ -7,6 +7,7 @@ from helpers.error import ImgurClientError
 from helpers.format import build_comment_tree
 from imgur.models.gallery_album import GalleryAlbum
 from imgur.models.gallery_image import GalleryImage
+from imgur.models.custom_gallery import CustomGallery
 from imgur.models.account_settings import AccountSettings
 
 API_URL = 'https://api.imgur.com/'
@@ -81,7 +82,7 @@ class ImgurClient:
         url = API_URL + '3/%s' % route
 
         if method == 'delete':
-            response = method_to_call(url, headers=header, params=data)
+            response = method_to_call(url, headers=header, params=data, data=data)
         else:
             response = method_to_call(url, headers=header, data=data)
 
@@ -89,7 +90,7 @@ class ImgurClient:
             self.auth.refresh()
             header = self.prepare_headers()
             if method == 'delete':
-                response = method_to_call(url, headers=header, params=data)
+                response = method_to_call(url, headers=header, params=data, data=data)
             else:
                 response = method_to_call(url, headers=header, data=data)
 
@@ -318,3 +319,108 @@ class ImgurClient:
     def comment_report(self, comment_id):
         self.logged_in()
         return self.make_request('POST', 'comment/%d/report' % comment_id)
+
+    # Custom Gallery Endpoints
+    def get_custom_gallery(self, gallery_id, sort='viral', window='week', page=0):
+        gallery = self.make_request('GET', 'g/%s/%s/%s/%s' % (gallery_id, sort, window, page))
+        return CustomGallery(
+            gallery['id'],
+            gallery['name'],
+            gallery['datetime'],
+            gallery['account_url'],
+            gallery['link'],
+            gallery['tags'],
+            gallery['item_count'],
+            gallery['items']
+        )
+
+    def get_user_galleries(self):
+        self.logged_in()
+        galleries = self.make_request('GET', 'g')
+
+        return [CustomGallery(
+            gallery['id'],
+            gallery['name'],
+            gallery['datetime'],
+            gallery['account_url'],
+            gallery['link'],
+            gallery['tags']
+        ) for gallery in galleries]
+
+    def create_custom_gallery(self, name, tags=None):
+        self.logged_in()
+        data = {
+            'name': name
+        }
+
+        if tags:
+            data['tags'] = ','.join(tags)
+
+        gallery = self.make_request('POST', 'g', data)
+
+        return CustomGallery(
+            gallery['id'],
+            gallery['name'],
+            gallery['datetime'],
+            gallery['account_url'],
+            gallery['link'],
+            gallery['tags']
+        )
+
+    def custom_gallery_update(self, gallery_id, name):
+        self.logged_in()
+        data = {
+            'id': gallery_id,
+            'name': name
+        }
+
+        gallery = self.make_request('POST', 'g/%s' % gallery_id, data)
+
+        return CustomGallery(
+            gallery['id'],
+            gallery['name'],
+            gallery['datetime'],
+            gallery['account_url'],
+            gallery['link'],
+            gallery['tags']
+        )
+
+    def custom_gallery_add_tags(self, gallery_id, tags):
+        self.logged_in()
+
+        if tags:
+            data = {
+                'tags': ','.join(tags)
+            }
+        else:
+            raise ImgurClientError('tags must not be empty!')
+
+        return self.make_request('PUT', 'g/%s/add_tags' % gallery_id, data)
+
+    def custom_gallery_remove_tags(self, gallery_id, tags):
+        self.logged_in()
+
+        if tags:
+            data = {
+                'tags': ','.join(tags)
+            }
+        else:
+            raise ImgurClientError('tags must not be empty!')
+
+        return self.make_request('DELETE', 'g/%s/remove_tags' % gallery_id, data)
+
+    def custom_gallery_delete(self, gallery_id):
+        self.logged_in()
+        return self.make_request('DELETE', 'g/%s' % gallery_id)
+
+    def filtered_out_tags(self):
+        self.logged_in()
+        return self.make_request('GET', 'g/filtered_out')
+
+    def block_tag(self, tag):
+        self.logged_in()
+        return self.make_request('POST', 'g/block_tag', data={'tag': tag})
+
+    def unblock_tag(self, tag):
+        self.logged_in()
+        return self.make_request('POST', 'g/unblock_tag', data={'tag': tag})
