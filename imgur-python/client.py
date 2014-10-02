@@ -349,9 +349,7 @@ class ImgurClient:
 
     def create_custom_gallery(self, name, tags=None):
         self.logged_in()
-        data = {
-            'name': name
-        }
+        data = {'name': name}
 
         if tags:
             data['tags'] = ','.join(tags)
@@ -389,9 +387,7 @@ class ImgurClient:
         self.logged_in()
 
         if tags:
-            data = {
-                'tags': ','.join(tags)
-            }
+            data = {'tags': ','.join(tags)}
         else:
             raise ImgurClientError('tags must not be empty!')
 
@@ -401,9 +397,7 @@ class ImgurClient:
         self.logged_in()
 
         if tags:
-            data = {
-                'tags': ','.join(tags)
-            }
+            data = {'tags': ','.join(tags)}
         else:
             raise ImgurClientError('tags must not be empty!')
 
