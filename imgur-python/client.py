@@ -117,13 +117,19 @@ class ImgurClient:
             raise ImgurClientError('Must be logged in to complete request.')
 
     @staticmethod
-    def build_gallery_images_and_albums(items):
-        result = []
-        for item in items:
-            if item['is_album']:
-                result.append(GalleryAlbum(item))
+    def build_gallery_images_and_albums(response):
+        if isinstance(response, list):
+            result = []
+            for item in response:
+                if item['is_album']:
+                    result.append(GalleryAlbum(item))
+                else:
+                    result.append(GalleryImage(item))
+        else:
+            if response['is_album']:
+                result = GalleryAlbum(response)
             else:
-                result.append(GalleryImage(item))
+                result = GalleryImage(response)
 
         return result
 
@@ -418,3 +424,34 @@ class ImgurClient:
     def unblock_tag(self, tag):
         self.logged_in()
         return self.make_request('POST', 'g/unblock_tag', data={'tag': tag})
+
+    # Gallery-related endpoints
+    def gallery(self, section='hot', sort='viral', page=0, window='day', show_viral=True):
+        if section == 'top':
+            response = self.make_request('GET', 'gallery/%s/%s/%s/%d?showViral=%s'
+                                                % (section, sort, window, page, str(show_viral).lower()))
+        else:
+            response = self.make_request('GET', 'gallery/%s/%s/%d?showViral=%s'
+                                                % (section, sort, page, str(show_viral).lower()))
+
+        return self.build_gallery_images_and_albums(response)
+
+    def memes_subgallery(self, sort='viral', page=0, window='week'):
+        if sort == 'top':
+            response = self.make_request('GET', 'g/memes/%s/%s/%d' % (sort, window, page))
+        else:
+            response = self.make_request('GET', 'g/memes/%s/%d' % (sort, page))
+
+        return self.build_gallery_images_and_albums(response)
+
+    def memes_subgallery_image(self, item_id):
+        item = self.make_request('GET', 'g/memes/%s' % item_id)
+        return self.build_gallery_images_and_albums(item)
+
+    def subreddit_gallery(self, subreddit, sort='time', window='week', page=0):
+        if sort == 'top':
+            response = self.make_request('GET', 'gallery/r/%s/%s/%s/%d' % (subreddit, sort, window, page))
+        else:
+            response = self.make_request('GET', 'gallery/r/%s/%s/%d' % (subreddit, sort, page))
+
+        return self.build_gallery_images_and_albums(response)
