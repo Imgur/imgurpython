@@ -1,5 +1,7 @@
 import math
 from imgur.models.comment import Comment
+from imgur.models.gallery_album import GalleryAlbum
+from imgur.models.gallery_image import GalleryImage
 
 
 def center_pad(s, length):
@@ -23,3 +25,34 @@ def build_comment_tree(children):
         children_objects.append(to_insert)
 
     return children_objects
+
+
+def format_comment_tree(response):
+    if isinstance(response, list):
+        result = []
+        for comment in response:
+            formatted = Comment(comment)
+            formatted.children = build_comment_tree(comment['children'])
+            result.append(formatted)
+    else:
+        result = Comment(response)
+        result.children = build_comment_tree(response['children'])
+
+    return result
+
+
+def build_gallery_images_and_albums(response):
+        if isinstance(response, list):
+            result = []
+            for item in response:
+                if item['is_album']:
+                    result.append(GalleryAlbum(item))
+                else:
+                    result.append(GalleryImage(item))
+        else:
+            if response['is_album']:
+                result = GalleryAlbum(response)
+            else:
+                result = GalleryImage(response)
+
+        return result

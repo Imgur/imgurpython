@@ -1,12 +1,14 @@
 import requests
+from imgur.models.tag import Tag
 from imgur.models.album import Album
 from imgur.models.image import Image
 from imgur.models.account import Account
 from imgur.models.comment import Comment
+from imgur.models.tag_vote import TagVote
 from helpers.error import ImgurClientError
-from helpers.format import build_comment_tree
-from imgur.models.gallery_album import GalleryAlbum
-from imgur.models.gallery_image import GalleryImage
+from helpers.format import format_comment_tree
+from helpers.error import ImgurClientRateLimitError
+from helpers.format import build_gallery_images_and_albums
 from imgur.models.custom_gallery import CustomGallery
 from imgur.models.account_settings import AccountSettings
 
@@ -54,13 +56,20 @@ class ImgurClient:
         'ids', 'title', 'description', 'privacy', 'layout', 'cover'
     }
 
-    def __init__(self, client_id=None, client_secret=None, access_token=None, refresh_token=None):
+    allowed_advanced_search_fields = {
+        'q_all', 'q_any', 'q_exactly', 'q_not', 'q_type', 'q_size_px'
+    }
+
+    def __init__(self, client_id, client_secret, access_token=None, refresh_token=None):
         self.client_id = client_id
         self.client_secret = client_secret
         self.auth = None
 
         if refresh_token is not None:
             self.auth = AuthWrapper(access_token, refresh_token, client_id, client_secret)
+
+    def set_user_auth(self, access_token, refresh_token):
+        self.auth = AuthWrapper(access_token, refresh_token, self.client_id, self.client_secret)
 
     def get_client_id(self):
         return self.client_id
@@ -81,7 +90,7 @@ class ImgurClient:
         header = self.prepare_headers()
         url = API_URL + '3/%s' % route
 
-        if method == 'delete':
+        if method in ('delete', 'get'):
             response = method_to_call(url, headers=header, params=data, data=data)
         else:
             response = method_to_call(url, headers=header, data=data)
@@ -89,14 +98,14 @@ class ImgurClient:
         if response.status_code == 403 and self.auth is not None:
             self.auth.refresh()
             header = self.prepare_headers()
-            if method == 'delete':
+            if method in ('delete', 'get'):
                 response = method_to_call(url, headers=header, params=data, data=data)
             else:
                 response = method_to_call(url, headers=header, data=data)
 
         # Rate-limit check
         if response.status_code == 429:
-            raise ImgurClientError('Rate-limit exceeded!')
+            raise ImgurClientRateLimitError()
 
         try:
             response_data = response.json()
@@ -116,23 +125,6 @@ class ImgurClient:
         if self.auth is None:
             raise ImgurClientError('Must be logged in to complete request.')
 
-    @staticmethod
-    def build_gallery_images_and_albums(response):
-        if isinstance(response, list):
-            result = []
-            for item in response:
-                if item['is_album']:
-                    result.append(GalleryAlbum(item))
-                else:
-                    result.append(GalleryImage(item))
-        else:
-            if response['is_album']:
-                result = GalleryAlbum(response)
-            else:
-                result = GalleryImage(response)
-
-        return result
-
     # Account-related endpoints
     def get_account(self, username):
         self.validate_user_context(username)
@@ -151,19 +143,19 @@ class ImgurClient:
         self.validate_user_context(username)
         gallery_favorites = self.make_request('GET', 'account/%s/gallery_favorites' % username)
 
-        return self.build_gallery_images_and_albums(gallery_favorites)
+        return build_gallery_images_and_albums(gallery_favorites)
 
     def get_account_favorites(self, username):
         self.validate_user_context(username)
         favorites = self.make_request('GET', 'account/%s/favorites' % username)
 
-        return self.build_gallery_images_and_albums(favorites)
+        return build_gallery_images_and_albums(favorites)
 
     def get_account_submissions(self, username, page=0):
         self.validate_user_context(username)
         submissions = self.make_request('GET', 'account/%s/submissions/%d' % (username, page))
 
-        return self.build_gallery_images_and_albums(submissions)
+        return build_gallery_images_and_albums(submissions)
 
     def get_account_settings(self, username):
         self.logged_in()
@@ -303,9 +295,7 @@ class ImgurClient:
 
     def get_comment_replies(self, comment_id):
         replies = self.make_request('GET', 'comment/%d/replies' % comment_id)
-        replies['children'] = build_comment_tree(replies['children'])
-
-        return replies
+        return format_comment_tree(replies)
 
     def post_comment_reply(self, comment_id, image_id, comment):
         self.logged_in()
@@ -434,7 +424,7 @@ class ImgurClient:
             response = self.make_request('GET', 'gallery/%s/%s/%d?showViral=%s'
                                                 % (section, sort, page, str(show_viral).lower()))
 
-        return self.build_gallery_images_and_albums(response)
+        return build_gallery_images_and_albums(response)
 
     def memes_subgallery(self, sort='viral', page=0, window='week'):
         if sort == 'top':
@@ -442,11 +432,11 @@ class ImgurClient:
         else:
             response = self.make_request('GET', 'g/memes/%s/%d' % (sort, page))
 
-        return self.build_gallery_images_and_albums(response)
+        return build_gallery_images_and_albums(response)
 
     def memes_subgallery_image(self, item_id):
         item = self.make_request('GET', 'g/memes/%s' % item_id)
-        return self.build_gallery_images_and_albums(item)
+        return build_gallery_images_and_albums(item)
 
     def subreddit_gallery(self, subreddit, sort='time', window='week', page=0):
         if sort == 'top':
@@ -454,4 +444,94 @@ class ImgurClient:
         else:
             response = self.make_request('GET', 'gallery/r/%s/%s/%d' % (subreddit, sort, page))
 
-        return self.build_gallery_images_and_albums(response)
+        return build_gallery_images_and_albums(response)
+
+    def subreddit_image(self, subreddit, image_id):
+        item = self.make_request('GET', 'gallery/r/%s/%s' % (subreddit, image_id))
+        return build_gallery_images_and_albums(item)
+
+    def gallery_tag(self, tag, sort='viral', page=0, window='week'):
+        if sort == 'top':
+            response = self.make_request('GET', 'gallery/t/%s/%s/%s/%d' % (tag, sort, window, page))
+        else:
+            response = self.make_request('GET', 'gallery/t/%s/%s/%d' % (tag, sort, page))
+
+        return Tag(
+            response['name'],
+            response['followers'],
+            response['total_items'],
+            response['following'],
+            response['items']
+        )
+
+    def gallery_tag_image(self, tag, item_id):
+        item = self.make_request('GET', 'gallery/t/%s/%s' % (tag, item_id))
+        return build_gallery_images_and_albums(item)
+
+    def gallery_item_tags(self, item_id):
+        response = self.make_request('GET', 'gallery/%s/tags' % item_id)
+
+        return [TagVote(
+            item['ups'],
+            item['downs'],
+            item['name'],
+            item['author']
+        ) for item in response['tags']]
+
+    def gallery_tag_vote(self, item_id, tag, vote):
+        self.logged_in()
+        response = self.make_request('POST', 'gallery/%s/vote/tag/%s/%s' % (item_id, tag, vote))
+        return response
+
+    def gallery_search(self, q, advanced=None, sort='time', window='all', page=0):
+        if advanced:
+            data = {field: advanced[field]
+                    for field in set(self.allowed_advanced_search_fields).intersection(advanced.keys())}
+        else:
+            data = {'q': q}
+
+        response = self.make_request('GET', 'gallery/search/%s/%s/%s' % (sort, window, page), data)
+        return build_gallery_images_and_albums(response)
+
+    def gallery_random(self, page=0):
+        response = self.make_request('GET', 'gallery/random/random/%d' % page)
+        return build_gallery_images_and_albums(response)
+
+    def share_on_imgur(self, item_id, title, terms=1):
+        self.logged_in()
+        data = {
+            'title': title,
+            'terms': terms
+        }
+
+        return self.make_request('POST', 'gallery/%s' % item_id, data)
+
+    def remove_from_gallery(self, item_id):
+        self.logged_in()
+        return self.make_request('DELETE', 'gallery/%s' % item_id)
+
+    def gallery_item(self, item_id):
+        response = self.make_request('GET', 'gallery/%s' % item_id)
+        return build_gallery_images_and_albums(response)
+
+    def report_gallery_item(self, item_id):
+        self.logged_in()
+        return self.make_request('POST', 'gallery/%s/report' % item_id)
+
+    def gallery_item_vote(self, item_id, vote='up'):
+        self.logged_in()
+        return self.make_request('POST', 'gallery/%s/vote/%s' % (item_id, vote))
+
+    def gallery_item_comments(self, item_id, sort='best'):
+        response = self.make_request('GET', 'gallery/%s/comments/%s' % (item_id, sort))
+        return format_comment_tree(response)
+
+    def gallery_comment(self, item_id, comment):
+        self.logged_in()
+        return self.make_request('POST', 'gallery/%s/comment' % item_id, {'comment': comment})
+
+    def gallery_comment_ids(self, item_id):
+        return self.make_request('GET', 'gallery/%s/comments/ids' % item_id)
+
+    def gallery_comment_count(self, item_id):
+        return self.make_request('GET', 'gallery/%s/comments/count' % item_id)
