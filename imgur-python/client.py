@@ -1,3 +1,4 @@
+import base64
 import requests
 from imgur.models.tag import Tag
 from imgur.models.album import Album
@@ -60,6 +61,14 @@ class ImgurClient:
         'q_all', 'q_any', 'q_exactly', 'q_not', 'q_type', 'q_size_px'
     }
 
+    allowed_account_fields = {
+        'bio', 'public_images', 'messaging_enabled', 'album_privacy', 'accepted_gallery_terms', 'username'
+    }
+
+    allowed_image_fields = {
+        'album', 'name', 'title', 'description'
+    }
+
     def __init__(self, client_id, client_secret, access_token=None, refresh_token=None):
         self.client_id = client_id
         self.client_secret = client_secret
@@ -74,8 +83,8 @@ class ImgurClient:
     def get_client_id(self):
         return self.client_id
 
-    def prepare_headers(self):
-        if self.auth is None:
+    def prepare_headers(self, force_anon=False):
+        if force_anon or self.auth is None:
             if self.client_id is None:
                 raise ImgurClientError('Client credentials not found!')
             else:
@@ -83,11 +92,11 @@ class ImgurClient:
         else:
             return {'Authorization': 'Bearer %s' % self.auth.get_current_access_token()}
 
-    def make_request(self, method, route, data=None):
+    def make_request(self, method, route, data=None, force_anon=False):
         method = method.lower()
         method_to_call = getattr(requests, method)
 
-        header = self.prepare_headers()
+        header = self.prepare_headers(force_anon)
         url = API_URL + '3/%s' % route
 
         if method in ('delete', 'get'):
@@ -174,12 +183,7 @@ class ImgurClient:
         )
 
     def change_account_settings(self, username, fields):
-        allowed_fields = {
-            'bio', 'public_images', 'messaging_enabled', 'album_privacy', 'accepted_gallery_terms', 'username'
-        }
-
-        post_data = {setting: fields[setting] for setting in set(allowed_fields).intersection(fields.keys())}
-
+        post_data = {setting: fields[setting] for setting in set(self.allowed_account_fields).intersection(fields.keys())}
         return self.make_request('POST', 'account/%s/settings' % username, post_data)
 
     def get_email_verification_status(self, username):
@@ -200,7 +204,7 @@ class ImgurClient:
 
     def get_account_album_ids(self, username, page=0):
         self.validate_user_context(username)
-        return self.make_request('GET', 'account/%s/albums/ids/%d' %  (username, page))
+        return self.make_request('GET', 'account/%s/albums/ids/%d' % (username, page))
 
     def get_account_album_count(self, username):
         self.validate_user_context(username)
@@ -535,3 +539,41 @@ class ImgurClient:
 
     def gallery_comment_count(self, item_id):
         return self.make_request('GET', 'gallery/%s/comments/count' % item_id)
+
+    # Image-related endpoints
+    def get_image(self, image_id):
+        image = self.make_request('GET', 'image/%s' % image_id)
+        return Image(image)
+
+    def upload_from_path(self, path, config=None, anon=True):
+        if not config: config = dict()
+
+        fd = open(path, 'rb')
+        contents = fd.read()
+        b64 = base64.b64encode(contents)
+
+        data = {
+            'image': b64,
+            'type': 'base64',
+        }
+
+        data.update({meta: config[meta] for meta in set(self.allowed_image_fields).intersection(config.keys())})
+        return self.make_request('POST', 'upload', data, anon)
+
+    def upload_from_url(self, url, config=None, anon=True):
+        if not config: config = dict()
+
+        data = {
+            'image': url,
+            'type': 'url',
+        }
+
+        data.update({meta: config[meta] for meta in set(self.allowed_image_fields).intersection(config.keys())})
+        return self.make_request('POST', 'upload', data, anon)
+
+    def delete_image(self, image_id):
+        return self.make_request('DELETE', 'image/%s' % image_id)
+
+    def favorite_image(self, image_id):
+        self.logged_in()
+        return self.make_request('POST', 'image/%s/favorite' % image_id)
