@@ -2,6 +2,7 @@ import math
 from imgur.models.comment import Comment
 from imgur.models.gallery_album import GalleryAlbum
 from imgur.models.gallery_image import GalleryImage
+from imgur.models.notification import Notification
 
 
 def center_pad(s, length):
@@ -56,3 +57,41 @@ def build_gallery_images_and_albums(response):
                 result = GalleryImage(response)
 
         return result
+
+
+def build_notifications(response):
+    result = {
+        'replies': [],
+        'messages': [Notification(
+            item['id'],
+            item['account_id'],
+            item['viewed'],
+            item['content']
+        ) for item in response['messages']]
+    }
+
+    for item in response['replies']:
+        notification = Notification(
+            item['id'],
+            item['account_id'],
+            item['viewed'],
+            item['content']
+        )
+        notification.content = format_comment_tree(item['content'])
+        result['replies'].append(notification)
+
+    return result
+
+
+def build_notification(item):
+    notification = Notification(
+            item['id'],
+            item['account_id'],
+            item['viewed'],
+            item['content']
+        )
+
+    if 'comment' in notification.content:
+        notification.content = format_comment_tree(item['content'])
+
+    return notification

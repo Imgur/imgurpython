@@ -7,7 +7,10 @@ from imgur.models.account import Account
 from imgur.models.comment import Comment
 from imgur.models.tag_vote import TagVote
 from helpers.error import ImgurClientError
+from helpers.format import build_notification
 from helpers.format import format_comment_tree
+from helpers.format import build_notifications
+from imgur.models.conversation import Conversation
 from helpers.error import ImgurClientRateLimitError
 from helpers.format import build_gallery_images_and_albums
 from imgur.models.custom_gallery import CustomGallery
@@ -577,3 +580,68 @@ class ImgurClient:
     def favorite_image(self, image_id):
         self.logged_in()
         return self.make_request('POST', 'image/%s/favorite' % image_id)
+
+    # Conversation-related endpoints
+    def conversation_list(self):
+        self.logged_in()
+
+        conversations = self.make_request('GET', 'conversations')
+        return [Conversation(
+            conversation['id'],
+            conversation['last_message_preview'],
+            conversation['datetime'],
+            conversation['with_account_id'],
+            conversation['with_account'],
+            conversation['message_count'],
+        ) for conversation in conversations]
+
+    def get_conversation(self, conversation_id, page=1, offset=0):
+        self.logged_in()
+
+        conversation = self.make_request('GET', 'conversations/%d/%d/%d' % (conversation_id, page, offset))
+        return Conversation(
+            conversation['id'],
+            conversation['last_message_preview'],
+            conversation['datetime'],
+            conversation['with_account_id'],
+            conversation['with_account'],
+            conversation['message_count'],
+            conversation['messages'],
+            conversation['done'],
+            conversation['page']
+        )
+
+    def create_message(self, recipient, body):
+        self.logged_in()
+        return self.make_request('POST', 'conversations/%s' % recipient, {'body': body})
+
+    def delete_conversation(self, conversation_id):
+        self.logged_in()
+        return self.make_request('DELETE', 'conversations/%d' % conversation_id)
+
+    def report_sender(self, username):
+        self.logged_in()
+        return self.make_request('POST', 'conversations/report/%s' % username)
+
+    def block_sender(self, username):
+        self.logged_in()
+        return self.make_request('POST', 'conversations/block/%s' % username)
+
+    # Notification-related endpoints
+    def get_notifications(self, new=True):
+        self.logged_in()
+        response = self.make_request('GET', 'notification', {'new': str(new).lower()})
+        return build_notifications(response)
+
+    def get_notification(self, notification_id):
+        self.logged_in()
+        response = self.make_request('GET', 'notification/%d' % notification_id)
+        return build_notification(response)
+
+    def mark_notifications_as_read(self, notification_ids):
+        self.logged_in()
+        return self.make_request('POST', 'notification', ','.join(notification_ids))
+
+    def default_memes(self):
+        response = self.make_request('GET', 'memegen/defaults')
+        return [Image(meme) for meme in response]
