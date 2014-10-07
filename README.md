@@ -97,262 +97,106 @@ Error types
 
 ### Account
 
-* ```python
-  get_account(username)
-  ```
-* ```python
-  get_gallery_favorites(username)
-  ```
-* ```python
-  get_account_favorites(username)
-  ```
-* ```python
-  get_account_submissions(username, page=0)
-  ```
-* ```python
-  get_account_settings(username)
-  ```
-* ```python
-  change_account_settings(username, fields)
-  ```
-* ```python
-  get_email_verification_status(username)
-  ```  
-* ```python
-  send_verification_email(username)
-  ```
-* ```python
-  get_account_albums(username, page=0)
-  ```
-* ```python
-  get_account_album_ids(username, page=0)
-  ```
-* ```python
-  get_account_album_count(username)
-  ```
-* ```python
-  get_account_comments(username, sort='newest', page=0)
-  ```
-* ```python
-  get_account_comment_ids(username, sort='newest', page=0)
-  ```
-* ```python
-  get_account_comment_count(username)
-  ```  
-* ```python
-  get_account_images(username, page=0)
-  ```
-* ```python
-  get_account_image_ids(username, page=0)
-  ```
-* ```python
-  get_account_album_count(username)
-  ```
+* `get_account(username)`
+* `get_gallery_favorites(username)`
+* `get_account_favorites(username)`
+* `get_account_submissions(username, page=0)`
+* `get_account_settings(username)`
+* `change_account_settings(username, fields)`
+* `get_email_verification_status(username)`
+* `send_verification_email(username)`
+* `get_account_albums(username, page=0)`
+* `get_account_album_ids(username, page=0)`
+* `get_account_album_count(username)`
+* `get_account_comments(username, sort='newest', page=0)`
+* `get_account_comment_ids(username, sort='newest', page=0)`
+* `get_account_comment_count(username)`
+* `get_account_images(username, page=0)`
+* `get_account_image_ids(username, page=0)`
+* `get_account_album_count(username)`
 
 ### Album
-* ```python
-  get_album(album_id)
-  ```
-* ```python
-  get_album_images(album_id)
-  ```
-* ```python
-  create_album(fields)
-  ```
-* ```python
-  update_album(album_id, fields)
-  ```
-* ```python
-  album_delete(album_id)
-  ```
-* ```python
-  album_favorite(album_id)
-  ```
-* ```python
-  album_set_images(album_id, ids)
-  ```
-* ```python
-  album_add_images(album_id, ids)
-  ```
-* ```python
-  album_remove_images(album_id, ids)
-  ```
+* `get_album(album_id)`
+* `get_album_images(album_id)`
+* `create_album(fields)`
+* `update_album(album_id, fields)`
+* `album_delete(album_id)`
+* `album_favorite(album_id)`
+* `album_set_images(album_id, ids)`
+* `album_add_images(album_id, ids)`
+* `album_remove_images(album_id, ids)`
 
 ### Comment
-* ```python
-  get_comment(comment_id)
-  ```
-* ```python
-  delete_comment(comment_id)
-  ```
-* ```python
-  create_album(fields)
-  ```
-* ```python
-  get_comment_replies(comment_id)
-  ```
-* ```python
-  post_comment_reply(comment_id, image_id, comment)
-  ```
-* ```python
-  comment_vote(comment_id, vote='up')
-  ```
-* ```python
-  comment_report(comment_id)
-  ```
+* `get_comment(comment_id)`
+* `delete_comment(comment_id)`
+* `create_album(fields)`
+* `get_comment_replies(comment_id)`
+* `post_comment_reply(comment_id, image_id, comment)`
+* `comment_vote(comment_id, vote='up')`
+* `comment_report(comment_id)`
 
 ### Custom Gallery
 
-* ```python
-  get_custom_gallery(gallery_id, sort='viral', window='week', page=0)
-  ```
-* ```python
-  get_user_galleries()
-  ```
-* ```python
-  create_custom_gallery(name, tags=None)
-  ```
-* ```python
-  custom_gallery_update(gallery_id, name)  
-  ```
-* ```python
-  custom_gallery_add_tags(gallery_id, tags)
-  ```
-* ```python
-  custom_gallery_remove_tags(gallery_id, tags)  
-  ```
-* ```python
-  custom_gallery_delete(gallery_id)
-  ```
-* ```python
-  filtered_out_tags()
-  ```
-* ```python
-  block_tag(tag)
-  ```
-* ```python
-  unblock_tag(tag)
-  ```
+* `get_custom_gallery(gallery_id, sort='viral', window='week', page=0)`
+* `get_user_galleries()`
+* `create_custom_gallery(name, tags=None)`
+* `custom_gallery_update(gallery_id, name)`
+* `custom_gallery_add_tags(gallery_id, tags)`
+* `custom_gallery_remove_tags(gallery_id, tags)`
+* `custom_gallery_delete(gallery_id)`
+* `filtered_out_tags()`
+* `block_tag(tag)`
+* `unblock_tag(tag)`
 
 ### Gallery
 
-* ```python
-  gallery(section='hot', sort='viral', page=0, window='day', show_viral=True)
-  ```
-* ```python
-  memes_subgallery(sort='viral', page=0, window='week')
-  ```
-* ```python
-  memes_subgallery_image(item_id)
-  ```
-* ```python
-  subreddit_gallery(subreddit, sort='time', window='week', page=0)
-  ```
-* ```python
-  subreddit_image(subreddit, image_id)
-  ```
-* ```python
-  gallery_tag(tag, sort='viral', page=0, window='week')
-  ```
-* ```python
-  gallery_tag_image(tag, item_id)
-  ```
-* ```python
-  gallery_item_tags(item_id)
-  ```
-* ```python
-  gallery_tag_vote(item_id, tag, vote)
-  ```
-* ```python
-  gallery_search(q, advanced=None, sort='time', window='all', page=0)
-  ```
-* ```python
-  gallery_random(page=0)
-  ```
-* ```python
-  share_on_imgur(item_id, title, terms=1)
-  ```
-* ```python
-  remove_from_gallery(item_id)
-  ```
-* ```python
-  gallery_item(item_id)
-  ```
-* ```python
-  report_gallery_item(item_id)
-  ```
-* ```python
-  gallery_item_vote(item_id, vote='up')
-  ```
-* ```python
-  gallery_item_comments(item_id, sort='best')
-  ```
-* ```python
-  gallery_comment(item_id, comment)
-  ```
-* ```python
-  gallery_comment_ids(item_id)
-  ```
-* ```python
-  gallery_comment_count(item_id)
-  ```
+* `gallery(section='hot', sort='viral', page=0, window='day', show_viral=True)`
+* `memes_subgallery(sort='viral', page=0, window='week')`
+* `memes_subgallery_image(item_id)`
+* `subreddit_gallery(subreddit, sort='time', window='week', page=0)`
+* `subreddit_image(subreddit, image_id)`
+* `gallery_tag(tag, sort='viral', page=0, window='week')`
+* `gallery_tag_image(tag, item_id)`
+* `gallery_item_tags(item_id)`
+* `gallery_tag_vote(item_id, tag, vote)`
+* `gallery_search(q, advanced=None, sort='time', window='all', page=0)`
+* `gallery_random(page=0)`
+* `share_on_imgur(item_id, title, terms=1)`
+* `remove_from_gallery(item_id)`
+* `gallery_item(item_id)`
+* `report_gallery_item(item_id)`
+* `gallery_item_vote(item_id, vote='up')`
+* `gallery_item_comments(item_id, sort='best')`
+* `gallery_comment(item_id, comment)`
+* `gallery_comment_ids(item_id)`
+* `gallery_comment_count(item_id)`
 
 ### Image
 
-* ```python
-  get_image(image_id)
-  ```
-* ```python
-  upload_from_path(path, config=None, anon=True)
-  ```
-* ```python
-  upload_from_url(url, config=None, anon=True)
-  ```
-* ```python
-  delete_image(image_id)
-  ```
-* ```python
-  favorite_image(image_id)
-  ```
+* `get_image(image_id)`
+* `upload_from_path(path, config=None, anon=True)`
+* `upload_from_url(url, config=None, anon=True)`
+* `delete_image(image_id)`
+* `favorite_image(image_id)`
 
 ### Conversation
 
-* ```python
-  conversation_list()
-  ```
-* ```python
-  get_conversation(conversation_id, page=1, offset=0)
-  ```
-* ```python
-  create_message(recipient, body)
-  ```
-* ```python
-  delete_conversation(conversation_id)
-  ```
-* ```python
-  report_sender(username)
-  ```
-* ```python
-  block_sender(username)
-  ```
+* `conversation_list()`
+* `get_conversation(conversation_id, page=1, offset=0)`
+* `create_message(recipient, body)`
+* `delete_conversation(conversation_id)`
+* `report_sender(username)`
+* `block_sender(username)`
 
 ### Notification
 
-* ```python
-  get_notifications(new=True)
-  ```
-* ```python
-  get_notification(notification_id)
-  ```
-* ```python
-  mark_notifications_as_read(notification_ids)
-  ```
+* `get_notifications(new=True)`
+* `get_notification(notification_id)`
+* `mark_notifications_as_read(notification_ids)`
 
 ### Memegen
 
-* ```python
-  default_memes()
-  ```
+* `default_memes()`
 
 Command Line Usage (deprecated)
 ------------
