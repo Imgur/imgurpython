@@ -84,13 +84,15 @@ from imgurpython import ImgurClient
 ### Error Handling
 Error types
 * ImgurClientError - General error handler, access message and status code via
-  * ```python
-    try
-      ...
-    except ImgurClientError as e
-      print e.error_message
-      print e.status_code
-    ```
+
+```python
+   try
+     ...
+   except ImgurClientError as e
+     print e.error_message
+     print e.status_code
+```
+
 * ImgurClientRateLimitError - Rate limit error
 
 ## ImgurClient Functions
