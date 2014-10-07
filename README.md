@@ -1,11 +1,11 @@
 imgurpython
 ===========
 
-A Python client for the [Imgur API](http//api.imgur.com/). Also includes a friendly demo application. It can be used to
+A Python client for the [Imgur API](http://api.imgur.com/). Also includes a friendly demo application. It can be used to
 interact with the Imgur API and examine its responses, as a command line utility, and it can be used as a library
 within your projects.
 
-You must [register](http//api.imgur.com/oauth2/addclient) your client with the Imgur API, and provide the Client-ID to
+You must [register](http://api.imgur.com/oauth2/addclient) your client with the Imgur API, and provide the Client-ID to
 make *any* request to the API (see the [Authentication](https://api.imgur.com/#authentication) note). If you want to
 perform actions on accounts, the user will have to authorize your application through OAuth2.
 
