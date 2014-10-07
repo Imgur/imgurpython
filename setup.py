@@ -17,7 +17,7 @@ setup(
     long_description='',
 
     # The project's main homepage.
-    url='https://github.com/jacobgreenleaf/imgur-python',
+    url='https://github.com/Imgur/imgurpython',
 
     # Author details
     author='Imgur Inc.',
