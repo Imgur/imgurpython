@@ -34,17 +34,18 @@ Using imgurpython in your application takes just a couple quick steps.
 To use the client from a strictly anonymous context (no actions on behalf of a user)
 
 ```python
+
 from imgurpython import ImgurClient
 
-client_id = "YOUR CLIENT ID"
-client_secret = "YOUR CLIENT SECRET"
+client_id = 'YOUR CLIENT ID'
+client_secret = 'YOUR CLIENT SECRET'
 
 client = ImgurClient(client_id, client_secret)
 
 # Example request
 items = client.gallery()
 for item in items
-  print item.link
+    print item.link
 
 ```
 
@@ -52,18 +53,19 @@ To initialize a client that takes actions on behalf of a user
 
 ```python
 from imgurpython import ImgurClient
-    client_id = "YOUR CLIENT ID"
-    client_secret = "YOUR CLIENT SECRET"
 
-    client = ImgurClient(client_id, client_secret)
+client_id = 'YOUR CLIENT ID'
+client_secret = 'YOUR CLIENT SECRET'
 
-    # Authorization flow, pin example (see docs for other auth types)
-    authorization_url = client.get_auth_url('pin')
+client = ImgurClient(client_id, client_secret)
 
-    # ... redirect user to `authorization_url`, obtain pin (or code or token) ...
+# Authorization flow, pin example (see docs for other auth types)
+authorization_url = client.get_auth_url('pin')
 
-    credentials = client.authorize('PIN OBTAINED FROM AUTHORIZATION', 'pin')
-    client.set_user_auth(credentials['access_token'], credentials['refresh_token'])
+# ... redirect user to `authorization_url`, obtain pin (or code or token) ...
+
+credentials = client.authorize('PIN OBTAINED FROM AUTHORIZATION', 'pin')
+client.set_user_auth(credentials['access_token'], credentials['refresh_token'])
 ```
 
 or if you already have an access/refresh token pair you can simply do
@@ -72,25 +74,27 @@ or if you already have an access/refresh token pair you can simply do
 from imgurpython import ImgurClient
 
 # If you already have an access/refresh pair in hand
-    client_id = "YOUR CLIENT ID"
-    client_SECRET = "YOUR CLIENT SECRET"
-    access_token = "USER ACCESS TOKEN"
-    refresh_token = "USER REFRESH TOKEN"
+client_id = 'YOUR CLIENT ID'
+client_SECRET = 'YOUR CLIENT SECRET'
+access_token = 'USER ACCESS TOKEN'
+refresh_token = 'USER REFRESH TOKEN'
 
-    # Note since access tokens expire after an hour, only the refresh token is required (library handles autorefresh)
-    client = ImgurClient(client_id, client_secret, access_token, refresh_token)
+# Note since access tokens expire after an hour, only the refresh token is required (library handles autorefresh)
+client = ImgurClient(client_id, client_secret, access_token, refresh_token)
 ```
 
 ### Error Handling
 Error types
 * ImgurClientError - General error handler, access message and status code via
-  * ```python
-    try
-      ...
-    except ImgurClientError as e
-      print e.error_message
-      print e.status_code
-    ```
+
+```python
+try
+    ...
+except ImgurClientError as e
+    print e.error_message
+    print e.status_code
+```
+
 * ImgurClientRateLimitError - Rate limit error
 
 ## ImgurClient Functions
