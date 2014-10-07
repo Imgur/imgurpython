@@ -8,3 +8,8 @@ class ImgurClientError(Exception):
             return "(%s) %s" % (self.status_code, self.error_message)
         else:
             return self.error_message
+
+
+class ImgurClientRateLimitError(Exception):
+    def __str__(self):
+            return 'Rate-limit exceeded!'

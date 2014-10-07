@@ -3,8 +3,8 @@
 import sys
 import json
 import math
-from imgur.factory import Factory
-from imgur.auth.expired import Expired
+from .imgur.factory import Factory
+from .imgur.auth.expired import Expired
 from helpers import format
 
 try:
