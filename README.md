@@ -6,19 +6,19 @@ interact with the Imgur API and examine its responses, as a command line utility
 within your projects.
 
 You must [register](http//api.imgur.com/oauth2/addclient) your client with the Imgur API, and provide the Client-ID to
-make *any* request to the API (see the [Authentication](https//api.imgur.com/#authentication) note). If you want to
+make *any* request to the API (see the [Authentication](https://api.imgur.com/#authentication) note). If you want to
 perform actions on accounts, the user will have to authorize your application through OAuth2.
 
 Imgur API Documentation
 -----------------------
 
-Our developer documentation can be found [here](https//api.imgur.com/).
+Our developer documentation can be found [here](https://api.imgur.com/).
 
 Community
 ---------
 
 The best way to reach out to Imgur for API support would be our
-[Google Group](https//groups.google.com/forum/#!forum/imgur), [Twitter](https//twitter.com/imgurapi), or via
+[Google Group](https://groups.google.com/forum/#!forum/imgur), [Twitter](https://twitter.com/imgurapi), or via
  api@imgur.com.
 
 Installation
@@ -207,38 +207,38 @@ Command Line Demo (deprecated)
 
 Configuration
 -------------
-`
+
 Configuration is done through the **config.json** (placed in `imgur-python/data`) file in JSON format. The contents of the file should be a JSON
-object with the following properties
+object with the following properties:
 
 ### client_id
 
-**Key** 'client_id'
+**Key**: 'client_id'
 
-**Type** string [16 characters]
+**Type**: string [16 characters]
 
-**Description** The Client-ID you got when you registered. Required for any API call.
+**Description**: The Client-ID you got when you registered. Required for any API call.
 
 ### secret
 
-**Key** 'secret'
+**Key**: 'secret'
 
-**Type** string [40 characters]
+**Type**: string [40 characters]
 
-**Description** The client secret you got when you registered, needed fo OAuth2 authentication.
+**Description**: The client secret you got when you registered, needed fo OAuth2 authentication.
 
 ### token_store
 
-**Key** 'token_store'
+**Key**: 'token_store'
 
-**Type** object
+**Type**: object
 
-**Description** Future configuration to control where the tokens are stored for persistent **insecure** storage of refresh tokens.
+**Description**: Future configuration to control where the tokens are stored for persistent **insecure** storage of refresh tokens.
 
 Command Line Usage
 ------------------
 
-> Usage  python main.py (action) [options...]
+> Usage:  python main.py (action) [options...]
 >
 > ### OAuth Actions
 >
