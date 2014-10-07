@@ -513,7 +513,7 @@ class ImgurClient:
         response = self.make_request('GET', 'gallery/random/random/%d' % page)
         return build_gallery_images_and_albums(response)
 
-    def share_on_imgur(self, item_id, title, terms=1):
+    def share_on_imgur(self, item_id, title, terms=0):
         self.logged_in()
         data = {
             'title': title,

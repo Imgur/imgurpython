@@ -45,7 +45,7 @@ client = ImgurClient(client_id, client_secret)
 # Example request
 items = client.gallery()
 for item in items
-    print item.link
+    print(item.link)
 
 ```
 
@@ -75,7 +75,7 @@ from imgurpython import ImgurClient
 
 # If you already have an access/refresh pair in hand
 client_id = 'YOUR CLIENT ID'
-client_SECRET = 'YOUR CLIENT SECRET'
+client_secret = 'YOUR CLIENT SECRET'
 access_token = 'USER ACCESS TOKEN'
 refresh_token = 'USER REFRESH TOKEN'
 
