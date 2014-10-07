@@ -1,4 +1,4 @@
-class Album:
+class GalleryAlbum:
 
     # See documentation at https://api.imgur.com/ for available fields
     def __init__(self, *initial_data, **kwargs):
