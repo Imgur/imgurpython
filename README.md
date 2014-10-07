@@ -202,7 +202,7 @@ except ImgurClientError as e
 
 * `default_memes()`
 
-Command Line Usage (deprecated)
+Command Line Demo (deprecated)
 ------------
 
 Configuration
