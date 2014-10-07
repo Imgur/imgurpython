@@ -165,7 +165,7 @@ except ImgurClientError as e
 * `gallery_tag_vote(item_id, tag, vote)`
 * `gallery_search(q, advanced=None, sort='time', window='all', page=0)`
 * `gallery_random(page=0)`
-* `share_on_imgur(item_id, title, terms=1)`
+* `share_on_imgur(item_id, title, terms=0)`
 * `remove_from_gallery(item_id)`
 * `gallery_item(item_id)`
 * `report_gallery_item(item_id)`
