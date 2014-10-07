@@ -1,8 +1,8 @@
 import math
-from imgur.models.comment import Comment
-from imgur.models.gallery_album import GalleryAlbum
-from imgur.models.gallery_image import GalleryImage
-from imgur.models.notification import Notification
+from ..helpers import Comment
+from ..helpers import GalleryAlbum
+from ..helpers import GalleryImage
+from ..helpers import Notification
 
 
 def center_pad(s, length):
