@@ -36,8 +36,8 @@ To use the client from a strictly anonymous context (no actions on behalf of a u
 ```python
 from imgurpython import ImgurClient
 
-client_id = "YOUR CLIENT ID"
-client_secret = "YOUR CLIENT SECRET"
+client_id = 'YOUR CLIENT ID'
+client_secret = 'YOUR CLIENT SECRET'
 
 client = ImgurClient(client_id, client_secret)
 
@@ -52,8 +52,8 @@ To initialize a client that takes actions on behalf of a user
 
 ```python
 from imgurpython import ImgurClient
-    client_id = "YOUR CLIENT ID"
-    client_secret = "YOUR CLIENT SECRET"
+    client_id = 'YOUR CLIENT ID'
+    client_secret = 'YOUR CLIENT SECRET'
 
     client = ImgurClient(client_id, client_secret)
 
@@ -72,10 +72,10 @@ or if you already have an access/refresh token pair you can simply do
 from imgurpython import ImgurClient
 
 # If you already have an access/refresh pair in hand
-    client_id = "YOUR CLIENT ID"
-    client_SECRET = "YOUR CLIENT SECRET"
-    access_token = "USER ACCESS TOKEN"
-    refresh_token = "USER REFRESH TOKEN"
+    client_id = 'YOUR CLIENT ID'
+    client_SECRET = 'YOUR CLIENT SECRET'
+    access_token = 'USER ACCESS TOKEN'
+    refresh_token = 'USER REFRESH TOKEN'
 
     # Note since access tokens expire after an hour, only the refresh token is required (library handles autorefresh)
     client = ImgurClient(client_id, client_secret, access_token, refresh_token)
