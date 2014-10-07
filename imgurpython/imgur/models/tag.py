@@ -1,5 +1,5 @@
-from gallery_album import GalleryAlbum
-from gallery_image import GalleryImage
+from .gallery_album import GalleryAlbum
+from .gallery_image import GalleryImage
 
 
 class Tag:

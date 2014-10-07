@@ -1,20 +1,20 @@
 import base64
 import requests
-from imgur.models.tag import Tag
-from imgur.models.album import Album
-from imgur.models.image import Image
-from imgur.models.account import Account
-from imgur.models.comment import Comment
-from imgur.models.tag_vote import TagVote
-from helpers.error import ImgurClientError
-from helpers.format import build_notification
-from helpers.format import format_comment_tree
-from helpers.format import build_notifications
-from imgur.models.conversation import Conversation
-from helpers.error import ImgurClientRateLimitError
-from helpers.format import build_gallery_images_and_albums
-from imgur.models.custom_gallery import CustomGallery
-from imgur.models.account_settings import AccountSettings
+from .imgur.models.tag import Tag
+from .imgur.models.album import Album
+from .imgur.models.image import Image
+from .imgur.models.account import Account
+from .imgur.models.comment import Comment
+from .imgur.models.tag_vote import TagVote
+from .helpers.error import ImgurClientError
+from .helpers.format import build_notification
+from .helpers.format import format_comment_tree
+from .helpers.format import build_notifications
+from .imgur.models.conversation import Conversation
+from .helpers.error import ImgurClientRateLimitError
+from .helpers.format import build_gallery_images_and_albums
+from .imgur.models.custom_gallery import CustomGallery
+from .imgur.models.account_settings import AccountSettings
 
 API_URL = 'https://api.imgur.com/'
 
