@@ -86,6 +86,17 @@ class ImgurClient:
     def get_client_id(self):
         return self.client_id
 
+    def get_auth_url(self, response_type='pin'):
+        return '%soauth2/authorize?client_id=%s&response_type=%s' % (API_URL, self.client_id, response_type)
+
+    def authorize(self, response, grant_type='pin'):
+        return self.make_request('POST', 'oauth2/token', {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'grant_type': grant_type,
+            grant_type: response
+        }, True)
+
     def prepare_headers(self, force_anon=False):
         if force_anon or self.auth is None:
             if self.client_id is None:
@@ -100,7 +111,7 @@ class ImgurClient:
         method_to_call = getattr(requests, method)
 
         header = self.prepare_headers(force_anon)
-        url = API_URL + '3/%s' % route
+        url = API_URL + ('3/%s' % route if 'oauth2' not in route else route)
 
         if method in ('delete', 'get'):
             response = method_to_call(url, headers=header, params=data, data=data)
@@ -124,10 +135,10 @@ class ImgurClient:
         except:
             raise ImgurClientError('JSON decoding of response failed.')
 
-        if isinstance(response_data['data'], dict) and 'error' in response_data['data']:
+        if 'data' in response_data and isinstance(response_data['data'], dict) and 'error' in response_data['data']:
             raise ImgurClientError(response_data['data']['error'], response.status_code)
 
-        return response_data['data']
+        return response_data['data'] if 'data' in response_data else response_data
 
     def validate_user_context(self, username):
         if username == 'me' and self.auth is None:
@@ -237,9 +248,9 @@ class ImgurClient:
         self.validate_user_context(username)
         return self.make_request('GET', 'account/%s/images/ids/%d' % (username, page))
 
-    def get_account_images_count(self, username, page=0):
+    def get_account_images_count(self, username):
         self.validate_user_context(username)
-        return self.make_request('GET', 'account/%s/images/ids/%d' % (username, page))
+        return self.make_request('GET', 'account/%s/images/count' % username)
 
     # Album-related endpoints
     def get_album(self, album_id):
@@ -313,11 +324,9 @@ class ImgurClient:
 
         return self.make_request('POST', 'comment/%d' % comment_id, data)
 
-    def comment_vote(self, comment_id, vote, toggle=True):
+    def comment_vote(self, comment_id, vote='up'):
         self.logged_in()
-        toggle_behavior = 1 if toggle else 0
-
-        return self.make_request('POST', 'comment/%d/vote/%s?toggle=%d' % (comment_id, vote, toggle_behavior))
+        return self.make_request('POST', 'comment/%d/vote/%s' % (comment_id, vote))
 
     def comment_report(self, comment_id):
         self.logged_in()
@@ -642,6 +651,7 @@ class ImgurClient:
         self.logged_in()
         return self.make_request('POST', 'notification', ','.join(notification_ids))
 
+    # Memegen-related endpoints
     def default_memes(self):
         response = self.make_request('GET', 'memegen/defaults')
         return [Image(meme) for meme in response]

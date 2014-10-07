@@ -28,7 +28,7 @@ Installation
 
 Configuration
 -------------
-
+`
 Configuration is done through the **config.json** (placed in `imgur-python/data`) file in JSON format. The contents of the file should be a JSON
 object with the following properties:
 

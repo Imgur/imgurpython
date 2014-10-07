@@ -11,7 +11,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
-    version='1.0.2',
+    version='1.1',
 
     description='Official Imgur python library with OAuth2 and samples',
     long_description='',
@@ -52,7 +52,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='sample setuptools development imgur',
+    keywords=['python', 'imgur', 'client'],
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -62,7 +62,7 @@ setup(
     # project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=[],
+    install_requires=['requests'],
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
