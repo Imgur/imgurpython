@@ -89,10 +89,10 @@ Error types
 
 ```python
 try
-  ...
+    ...
 except ImgurClientError as e
-  print e.error_message
-  print e.status_code
+    print e.error_message
+    print e.status_code
 ```
 
 * ImgurClientRateLimitError - Rate limit error
