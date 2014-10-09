@@ -1,7 +1,7 @@
 imgurpython
 ===========
 
-A Python client for the [Imgur API](http://api.imgur.com/). Also includes a friendly demo application. It can be used to
+A Python client for the [Imgur API](http://api.imgur.com/). It can be used to
 interact with the Imgur API in your projects.
 
 You must [register](http://api.imgur.com/oauth2/addclient) your client with the Imgur API, and provide the Client-ID to
