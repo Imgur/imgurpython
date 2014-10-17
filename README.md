@@ -8,6 +8,14 @@ You must [register](http://api.imgur.com/oauth2/addclient) your client with the 
 make *any* request to the API (see the [Authentication](https://api.imgur.com/#authentication) note). If you want to
 perform actions on accounts, the user will have to authorize your application through OAuth2.
 
+Requirements
+------------
+
+    Python >= 2.7
+
+    pip packages:
+        - [requests](http://docs.python-requests.org/en/latest/user/install/)
+
 Imgur API Documentation
 -----------------------
 
