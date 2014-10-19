@@ -11,10 +11,8 @@ perform actions on accounts, the user will have to authorize your application th
 Requirements
 ------------
 
-    Python >= 2.7
-
-    pip packages:
-        - [requests](http://docs.python-requests.org/en/latest/user/install/)
+- Python >= 2.7
+- [requests](http://docs.python-requests.org/en/latest/user/install/)
 
 Imgur API Documentation
 -----------------------
