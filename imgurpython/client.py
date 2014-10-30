@@ -558,7 +558,8 @@ class ImgurClient:
         return Image(image)
 
     def upload_from_path(self, path, config=None, anon=True):
-        if not config: config = dict()
+        if not config:
+            config = dict()
 
         fd = open(path, 'rb')
         contents = fd.read()
@@ -573,7 +574,8 @@ class ImgurClient:
         return self.make_request('POST', 'upload', data, anon)
 
     def upload_from_url(self, url, config=None, anon=True):
-        if not config: config = dict()
+        if not config:
+            config = dict()
 
         data = {
             'image': url,

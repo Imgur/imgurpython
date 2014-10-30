@@ -71,11 +71,11 @@ def build_notifications(response):
 
 def build_notification(item):
     notification = Notification(
-            item['id'],
-            item['account_id'],
-            item['viewed'],
-            item['content']
-        )
+        item['id'],
+        item['account_id'],
+        item['viewed'],
+        item['content']
+    )
 
     if 'comment' in notification.content:
         notification.content = format_comment_tree(item['content'])
