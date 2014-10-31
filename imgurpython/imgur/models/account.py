@@ -5,5 +5,5 @@ class Account:
         self.url = url
         self.bio = bio
         self.reputation = reputation
-        self.created = created,
+        self.created = created
         self.pro_expiration = pro_expiration
