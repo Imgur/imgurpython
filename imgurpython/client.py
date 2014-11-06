@@ -80,11 +80,16 @@ class ImgurClient:
         if refresh_token is not None:
             self.auth = AuthWrapper(access_token, refresh_token, client_id, client_secret)
 
+        self.credits = self.get_credits()
+
     def set_user_auth(self, access_token, refresh_token):
         self.auth = AuthWrapper(access_token, refresh_token, self.client_id, self.client_secret)
 
     def get_client_id(self):
         return self.client_id
+
+    def get_credits(self):
+        return self.make_request('GET', 'credits', None, True)
 
     def get_auth_url(self, response_type='pin'):
         return '%soauth2/authorize?client_id=%s&response_type=%s' % (API_URL, self.client_id, response_type)
@@ -125,6 +130,14 @@ class ImgurClient:
                 response = method_to_call(url, headers=header, params=data, data=data)
             else:
                 response = method_to_call(url, headers=header, data=data)
+
+        self.credits = {
+            'UserLimit': response.headers.get('X-RateLimit-UserLimit'),
+            'UserRemaining': response.headers.get('X-RateLimit-UserRemaining'),
+            'UserReset': response.headers.get('X-RateLimit-UserReset'),
+            'ClientLimit': response.headers.get('X-RateLimit-ClientLimit'),
+            'ClientRemaining': response.headers.get('X-RateLimit-ClientRemaining')
+        }
 
         # Rate-limit check
         if response.status_code == 429:

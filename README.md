@@ -102,6 +102,18 @@ except ImgurClientError as e
 
 * ImgurClientRateLimitError - Rate limit error
 
+### Credits
+
+To view client and user credit information, use the `credits` attribute of `ImgurClient`.
+`credits` holds a dictionary with the following keys:
+* UserLimit
+* UserRemaining
+* UserReset
+* ClientLimit
+* ClientRemaining
+
+For more information about rate-limiting, please see the note in our [docs](http://api.imgur.com/#limits)!
+
 ## ImgurClient Functions
 
 ### Account
