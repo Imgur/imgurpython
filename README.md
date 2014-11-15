@@ -93,6 +93,8 @@ Error types
 * ImgurClientError - General error handler, access message and status code via
 
 ```python
+from imgurpython.helpers.error import ImgurClientError
+
 try
     ...
 except ImgurClientError as e
