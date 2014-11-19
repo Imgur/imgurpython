@@ -125,7 +125,7 @@ Examples
 Output links from gallery could be a GalleyImage or GalleryAlbum
 
 #### Default
-By default, this will return meme links on the first page (0) with section 'hot' sorted by 'viral', date range is 'day' and show_viral is set to True
+By default, this will return links to items on the first page (0) with section 'hot' sorted by 'viral', date range is 'day' and show_viral is set to True
 
 ```python
 items = client.gallery()
@@ -148,10 +148,9 @@ for item in items:
 	http://i.imgur.com/EbeztS2.jpg
 	http://i.imgur.com/DuwnhKO.jpg
 	...
-	...
 
 #### With Specific Parameters
-In this example, return meme links on the fourth page (3) with section 'top' sorted by 'time', date range is 'week' and show_viral is set to False
+In this example, return links to items on the fourth page (3) with section 'top' sorted by 'time', date range is 'week' and show_viral is set to False
 
 ```python
 items = client.gallery(section='top', sort='time', page=3, window='week', show_viral=False)
@@ -173,7 +172,6 @@ for item in items:
 	http://i.imgur.com/q4rJFbR.jpg
 	http://i.imgur.com/gWaNC22.jpg
 	http://i.imgur.com/YEQomCd.gif
-	...
 	...
 
 ## ImgurClient Functions
