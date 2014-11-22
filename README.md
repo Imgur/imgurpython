@@ -180,20 +180,25 @@ for item in items:
 In this example, upload an image which is a URL
 
 ```python
-image = client.upload_from_url('')
+image = client.upload_from_url('https://scontent-a-lga.xx.fbcdn.net/hphotos-xfp1/v/t1.0-9/10405254_855764424482474_6812608353091007109_n.jpg?oh=26f230eca9e55dde4021e0d11e3ccef0&oe=54D92A21')
 
 ```
 **Output**
+
+    {u'account_url': None, u'deletehash': u'Nxrdpf7c6HZq5Zh', u'description': None, u'name': u'', u'title': None, u'section': None, u'views': 0, u'favorite': False, u'datetime': 1416694646, u'height': 852, u'width': 600, u'bandwidth': 0, u'nsfw': None, u'vote': None, u'link': u'http://i.imgur.com/iU03DTq.jpg', u'animated': False, u'type': u'image/jpeg', u'id': u'iU03DTq', u'size': 79631}
+    
 
 #### Upload from Path
 In this example, upload an image which is a file
 
 ```python
-image = client.upload_from_path('')
+image = client.upload_from_path('/tmp/aW0nDYd_460s.jpg')
 
 ```
 
 **Output**
+
+    {u'account_url': None, u'deletehash': u'JuWydSGOZesuZSv', u'description': None, u'name': u'', u'title': None, u'section': None, u'views': 0, u'favorite': False, u'datetime': 1416695070, u'height': 451, u'width': 460, u'bandwidth': 0, u'nsfw': None, u'vote': None, u'link': u'http://i.imgur.com/Mcp6byc.jpg', u'animated': False, u'type': u'image/jpeg', u'id': u'Mcp6byc', u'size': 47306}
 
 ## ImgurClient Functions
 
