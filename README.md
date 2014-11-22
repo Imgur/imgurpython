@@ -174,6 +174,27 @@ for item in items:
 	http://i.imgur.com/YEQomCd.gif
 	...
 
+### Upload Image
+
+#### Upload from URL
+In this example, upload an image which is a URL
+
+```python
+image = client.upload_from_url('')
+
+```
+**Output**
+
+#### Upload from Path
+In this example, upload an image which is a file
+
+```python
+image = client.upload_from_path('')
+
+```
+
+**Output**
+
 ## ImgurClient Functions
 
 ### Account
