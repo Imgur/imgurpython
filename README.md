@@ -243,6 +243,21 @@ print client.album_add_images('9SsDk', [image1_id, image2_id])
 **Output**
 
     True
+    
+#### Get Album
+
+```python
+album =  client.get_album('9SsDk')
+print album.title
+print album.link
+print album.account_url
+```
+
+**Output**
+  
+    Barcelona
+	http://imgur.com/a/9SsDk
+	ue90
 
 
 ## ImgurClient Functions
