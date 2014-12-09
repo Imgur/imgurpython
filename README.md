@@ -214,7 +214,7 @@ Else:
 
 Following examples will assume you have authenticated with an account.
 
-#### Create Albbum
+#### Create Album
 Create a new album. To add images to an album during creation, you need to be authenticated with an account. Creating an album without authenticating an account will create an anonymous album which is not tied to an account. Adding images to an anonymous album is only available during image uploading. 
 
 ```python
