@@ -99,7 +99,7 @@ class ImgurClient:
             'client_id': self.client_id,
             'client_secret': self.client_secret,
             'grant_type': grant_type,
-            grant_type: response
+            'code' if grant_type == 'authorization_code' else grant_type: response
         }, True)
 
     def prepare_headers(self, force_anon=False):
