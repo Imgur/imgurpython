@@ -4,8 +4,8 @@ from .gallery_image import GalleryImage
 
 class CustomGallery:
 
-    def __init__(self, id, name, datetime, account_url, link, tags, item_count=None, items=None):
-        self.id = id
+    def __init__(self, custom_gallery_id, name, datetime, account_url, link, tags, item_count=None, items=None):
+        self.id = custom_gallery_id
         self.name = name
         self.datetime = datetime
         self.account_url = account_url

@@ -2,9 +2,9 @@ from .message import Message
 
 class Conversation:
 
-    def __init__(self, id, last_message_preview, datetime, with_account_id, with_account, message_count, messages=None,
+    def __init__(self, conversation_id, last_message_preview, datetime, with_account_id, with_account, message_count, messages=None,
                  done=None, page=None):
-        self.id = id
+        self.id = conversation_id
         self.last_message_preview = last_message_preview
         self.datetime = datetime
         self.with_account_id = with_account_id
