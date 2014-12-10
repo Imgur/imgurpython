@@ -278,3 +278,14 @@ for item in items:
 ### Memegen
 
 * `default_memes()`
+
+Imgur entry points
+==================
+| entry point                         |  content                       |
+|-------------------------------------|--------------------------------|
+| imgur.com/{image_id}                | image                          |
+| imgur.com/{image_id}.extension      | direct link to image (no html) |
+| imgur.com/a/{album_id}              | album                          |
+| imgur.com/a/{album_id}#{image_id}   | single image from an album     |
+| imgur.com/gallery/{gallery_post_id} | gallery                        |
+
