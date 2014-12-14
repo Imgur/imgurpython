@@ -1,6 +1,6 @@
 from .message import Message
 
-class Conversation:
+class Conversation(object):
 
     def __init__(self, conversation_id, last_message_preview, datetime, with_account_id, with_account, message_count, messages=None,
                  done=None, page=None):

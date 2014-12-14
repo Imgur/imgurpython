@@ -1,4 +1,4 @@
-class Account:
+class Account(object):
 
     def __init__(self, account_id, url, bio, reputation, created, pro_expiration):
         self.id = account_id

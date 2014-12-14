@@ -1,4 +1,4 @@
-class TagVote:
+class TagVote(object):
 
     def __init__(self, ups, downs, name, author):
         self.ups = ups

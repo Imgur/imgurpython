@@ -19,7 +19,7 @@ from .imgur.models.account_settings import AccountSettings
 API_URL = 'https://api.imgur.com/'
 
 
-class AuthWrapper:
+class AuthWrapper(object):
     def __init__(self, access_token, refresh_token, client_id, client_secret):
         self.current_access_token = access_token
 
@@ -55,7 +55,7 @@ class AuthWrapper:
         self.current_access_token = response_data['access_token']
 
 
-class ImgurClient:
+class ImgurClient(object):
     allowed_album_fields = {
         'ids', 'title', 'description', 'privacy', 'layout', 'cover'
     }
