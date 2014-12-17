@@ -2,7 +2,7 @@ from .gallery_album import GalleryAlbum
 from .gallery_image import GalleryImage
 
 
-class Tag:
+class Tag(object):
 
     def __init__(self, name, followers, total_items, following, items):
         self.name = name

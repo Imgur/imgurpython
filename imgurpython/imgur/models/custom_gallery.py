@@ -2,7 +2,7 @@ from .gallery_album import GalleryAlbum
 from .gallery_image import GalleryImage
 
 
-class CustomGallery:
+class CustomGallery(object):
 
     def __init__(self, custom_gallery_id, name, datetime, account_url, link, tags, item_count=None, items=None):
         self.id = custom_gallery_id

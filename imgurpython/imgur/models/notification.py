@@ -1,4 +1,4 @@
-class Notification:
+class Notification(object):
 
     def __init__(self, notification_id, account_id, viewed, content):
         self.id = notification_id

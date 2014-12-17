@@ -1,4 +1,4 @@
-class Message:
+class Message(object):
 
     def __init__(self, message_id, from_user, account_id, sender_id, body, conversation_id, datetime):
         self.id = message_id

@@ -1,4 +1,4 @@
-class AccountSettings:
+class AccountSettings(object):
 
     def __init__(self, email, high_quality, public_images, album_privacy, pro_expiration, accepted_gallery_terms,
                  active_emails, messaging_enabled, blocked_users):
