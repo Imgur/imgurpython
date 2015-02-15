@@ -45,13 +45,41 @@ for item in items:
 
 
     http://i.imgur.com/ls7OPx7.gif
-	http://i.imgur.com/FI7yPWo.png
-	http://imgur.com/a/8QKvH
-	http://i.imgur.com/h4IDMyK.gif
-	http://i.imgur.com/t4NpfCT.jpg
-	http://i.imgur.com/kyCP6q9.jpg
-	http://imgur.com/a/CU11w
-	http://i.imgur.com/q4rJFbR.jpg
-	http://i.imgur.com/gWaNC22.jpg
-	http://i.imgur.com/YEQomCd.gif
-	...
+    http://i.imgur.com/FI7yPWo.png
+    http://imgur.com/a/8QKvH
+    http://i.imgur.com/h4IDMyK.gif
+    http://i.imgur.com/t4NpfCT.jpg
+    http://i.imgur.com/kyCP6q9.jpg
+    http://imgur.com/a/CU11w
+    http://i.imgur.com/q4rJFbR.jpg
+    http://i.imgur.com/gWaNC22.jpg
+    http://i.imgur.com/YEQomCd.gif
+    ...
+
+#### Getting the authenticated user's albums
+
+For endpoints that require usernames, once a user is authenticated we can use the keyword 'me' to pull their information. Here's how to pull one of their albums:
+	
+```python
+for album in client.get_account_albums('me'):
+album_title = album.title if album.title else 'Untitled'
+print('Album: {0} ({1})'.format(album_title, album.id))
+
+for image in client.get_album_images(album.id):
+    image_title = image.title if image.title else 'Untitled'
+    print('\t{0}: {1}'.format(image_title, image.link))
+
+# Save some API credits by not getting all albums
+break
+```
+
+***Output***
+
+
+	Album: Qittens! (LPNnY)
+		Untitled: http://i.imgur.com/b9rL7ew.jpg
+		Untitled: http://i.imgur.com/Ymg3obW.jpg
+		Untitled: http://i.imgur.com/kMzbu0S.jpg
+		...
+
+
