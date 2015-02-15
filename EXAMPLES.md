@@ -63,7 +63,7 @@ For endpoints that require usernames, once a user is authenticated we can use th
 ```python
     for album in client.get_account_albums('me'):
         album_title = album.title if album.title else 'Untitled'
-        print('ID: {0} - {1}'.format(album.id, album_title))
+        print('Album: {0} ({1})'.format(album_title, album.id))
 
         for image in client.get_album_images(album.id):
             image_title = image.title if image.title else 'Untitled'
@@ -75,10 +75,11 @@ For endpoints that require usernames, once a user is authenticated we can use th
 
 ***Output***
 
-Album: Qittens! (LPNnY)
-	Untitled: http://i.imgur.com/b9rL7ew.jpg
-	Untitled: http://i.imgur.com/Ymg3obW.jpg
-	Untitled: http://i.imgur.com/kMzbu0S.jpg
-	...
+
+	Album: Qittens! (LPNnY)
+		Untitled: http://i.imgur.com/b9rL7ew.jpg
+		Untitled: http://i.imgur.com/Ymg3obW.jpg
+		Untitled: http://i.imgur.com/kMzbu0S.jpg
+		...
 
 
