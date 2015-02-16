@@ -3,7 +3,7 @@
 '''
 	Here's how you go about authenticating yourself! The important thing to
 	note here is that this script will be used in the other examples so
-	set up a test user with API credentials and set them up in here.
+	set up a test user with API credentials and set them up in auth.ini.
 '''
 
 from imgurpython import ImgurClient
