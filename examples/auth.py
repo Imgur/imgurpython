@@ -7,22 +7,7 @@
 '''
 
 from imgurpython import ImgurClient
-
-def get_input(string):
-	''' Get input from console regardless of python 2 or 3 '''
-	try:
-		return raw_input(string)
-	except:
-		return input(string)
-
-def get_config():
-	''' More version compatibility stuff '''
-	try:
-		import ConfigParser
-		return ConfigParser.ConfigParser()
-	except:
-		import configparser
-		return configparser.ConfigParser()
+from helpers import get_input, get_config
 
 def authenticate():
 	# Get client ID and secret from auth.ini
