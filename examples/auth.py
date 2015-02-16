@@ -6,13 +6,6 @@
 	set up a test user with API credentials and set them up in here.
 '''
 
-#client_id = 'YOUR CLIENT ID'
-#client_secret = 'YOUR CLIENT SECRET'
-
-client_id = u'6d2d7ee5f212dc1'
-client_secret = u'18828c1021069154576672e86b8ab2e1559d329a'
-
-
 from imgurpython import ImgurClient
 
 def get_input(string):
@@ -22,7 +15,22 @@ def get_input(string):
 	except:
 		return input(string)
 
+def get_config():
+	''' More version compatibility stuff '''
+	try:
+		import ConfigParser
+		return ConfigParser.ConfigParser()
+	except:
+		import configparser
+		return configparser.ConfigParser()
+
 def authenticate():
+	# Get client ID and secret from auth.ini
+	config = get_config()
+	config.read('auth.ini')
+	client_id = config['credentials']['client_id']
+	client_secret = config['credentials']['client_secret']
+
 	client = ImgurClient(client_id, client_secret)
 
 	# Authorization flow, pin example (see docs for other auth types)
