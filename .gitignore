@@ -6,3 +6,4 @@ dist
 build
 imgurpython.egg-info
 runner.py
+examples/auth.ini
