@@ -13,8 +13,8 @@ def authenticate():
 	# Get client ID and secret from auth.ini
 	config = get_config()
 	config.read('auth.ini')
-	client_id = config['credentials']['client_id']
-	client_secret = config['credentials']['client_secret']
+	client_id = config.get('credentials', 'client_id')
+	client_secret = config.get('credentials', 'client_secret')
 
 	client = ImgurClient(client_id, client_secret)
 
