@@ -17,6 +17,7 @@ from .imgur.models.custom_gallery import CustomGallery
 from .imgur.models.account_settings import AccountSettings
 
 API_URL = 'https://api.imgur.com/'
+MASHAPE_URL = 'https://imgur-apiv3.p.mashape.com/'
 
 
 class AuthWrapper(object):
@@ -72,10 +73,11 @@ class ImgurClient(object):
         'album', 'name', 'title', 'description'
     }
 
-    def __init__(self, client_id, client_secret, access_token=None, refresh_token=None):
+    def __init__(self, client_id, client_secret, access_token=None, refresh_token=None, mashape_key=None):
         self.client_id = client_id
         self.client_secret = client_secret
         self.auth = None
+        self.mashape_key = mashape_key
 
         if refresh_token is not None:
             self.auth = AuthWrapper(access_token, refresh_token, client_id, client_secret)
@@ -103,20 +105,27 @@ class ImgurClient(object):
         }, True)
 
     def prepare_headers(self, force_anon=False):
+        headers = {}
         if force_anon or self.auth is None:
             if self.client_id is None:
                 raise ImgurClientError('Client credentials not found!')
             else:
-                return {'Authorization': 'Client-ID %s' % self.get_client_id()}
+                headers['Authorization'] = 'Client-ID %s' % self.get_client_id()
         else:
-            return {'Authorization': 'Bearer %s' % self.auth.get_current_access_token()}
+            headers['Authorization'] = 'Bearer %s' % self.auth.get_current_access_token()
+
+        if self.mashape_key is not None:
+            headers['X-Mashape-Key'] = self.mashape_key
+
+        return headers
+
 
     def make_request(self, method, route, data=None, force_anon=False):
         method = method.lower()
         method_to_call = getattr(requests, method)
 
         header = self.prepare_headers(force_anon)
-        url = API_URL + ('3/%s' % route if 'oauth2' not in route else route)
+        url = (MASHAPE_URL if self.mashape_key is not None else API_URL) + ('3/%s' % route if 'oauth2' not in route else route)
 
         if method in ('delete', 'get'):
             response = method_to_call(url, headers=header, params=data, data=data)
