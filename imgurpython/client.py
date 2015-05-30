@@ -184,15 +184,15 @@ class ImgurClient(object):
             account_data['pro_expiration'],
         )
 
-    def get_gallery_favorites(self, username):
+    def get_gallery_favorites(self, username, page=0):
         self.validate_user_context(username)
-        gallery_favorites = self.make_request('GET', 'account/%s/gallery_favorites' % username)
+        gallery_favorites = self.make_request('GET', 'account/%s/gallery_favorites/%d' % (username, page))
 
         return build_gallery_images_and_albums(gallery_favorites)
 
-    def get_account_favorites(self, username):
+    def get_account_favorites(self, username, page=0):
         self.validate_user_context(username)
-        favorites = self.make_request('GET', 'account/%s/favorites' % username)
+        favorites = self.make_request('GET', 'account/%s/favorites/%d' % (username, page))
 
         return build_gallery_images_and_albums(favorites)
 
