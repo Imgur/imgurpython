@@ -22,9 +22,7 @@ Our developer documentation can be found [here](https://api.imgur.com/).
 Community
 ---------
 
-The best way to reach out to Imgur for API support would be our
-[Google Group](https://groups.google.com/forum/#!forum/imgur), [Twitter](https://twitter.com/imgurapi), or via
- api@imgur.com.
+The best way to reach out to Imgur for API support is emailing us at api@imgur.com.
 
 Installation
 ------------
