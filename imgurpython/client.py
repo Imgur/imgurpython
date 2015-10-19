@@ -1,6 +1,7 @@
 import base64
 import requests
 from .imgur.models.tag import Tag
+from .imgur.models.topic import Topic
 from .imgur.models.album import Album
 from .imgur.models.image import Image
 from .imgur.models.account import Account
@@ -679,3 +680,8 @@ class ImgurClient(object):
     def default_memes(self):
         response = self.make_request('GET', 'memegen/defaults')
         return [Image(meme) for meme in response]
+
+    # Topic-related endpoints
+    def default_topics(self):
+        topics = self.make_request('GET', 'topics/defaults')
+        return [Topic(topic) for topic in topics]
