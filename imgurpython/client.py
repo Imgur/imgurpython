@@ -685,3 +685,7 @@ class ImgurClient(object):
     def default_topics(self):
         topics = self.make_request('GET', 'topics/defaults')
         return [Topic(topic) for topic in topics]
+
+    def gallery_topic_item(self, topic_id, item_id):
+        response = self.make_request('GET', 'topics/%s/%s' % (topic_id, item_id))
+        return build_gallery_images_and_albums(response)
