@@ -586,13 +586,13 @@ class ImgurClient(object):
         fd = open(path, 'rb')
         contents = fd.read()
         b64 = base64.b64encode(contents)
-
         data = {
             'image': b64,
             'type': 'base64',
         }
-
         data.update({meta: config[meta] for meta in set(self.allowed_image_fields).intersection(config.keys())})
+        fd.close()
+        
         return self.make_request('POST', 'upload', data, anon)
 
     def upload_from_url(self, url, config=None, anon=True):
