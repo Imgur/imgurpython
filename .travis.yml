@@ -1,0 +1,9 @@
+language: python
+deploy:
+  provider: pypi
+  user: imgurops
+  password:
+    secure: DBBXzMOm037T4XUmfo0Gu9mAytw2DCYJT8i0KgihKYxS+uslF+dwHf2clBEWDLUE0xkXhqXetq+sNgfshovGKIqZanASYZ/6Zf5ikg10ApgaBidObv2XMYNyuQxL8Gqv9l2tdlWqdUoOJzRBMV2Nh0B3BJ9hG7V5NFMDcfG/qyo=
+  on:
+    tags: true
+    repo: Imgur/imgurpython
