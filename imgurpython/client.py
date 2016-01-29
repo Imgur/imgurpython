@@ -579,21 +579,23 @@ class ImgurClient(object):
         image = self.make_request('GET', 'image/%s' % image_id)
         return Image(image)
 
-    def upload_from_path(self, path, config=None, anon=True):
+    def upload_from_file(self, file, config=None, anon=True):
         if not config:
             config = dict()
 
-        fd = open(path, 'rb')
-        contents = fd.read()
+        contents = file.read()
         b64 = base64.b64encode(contents)
         data = {
             'image': b64,
             'type': 'base64',
         }
         data.update({meta: config[meta] for meta in set(self.allowed_image_fields).intersection(config.keys())})
-        fd.close()
-        
+
         return self.make_request('POST', 'upload', data, anon)
+
+    def upload_from_path(self, path, config=None, anon=True):
+        with open(path, 'rb') as f:
+            return self.upload_from_file(f, config=config, anon=anon)
 
     def upload_from_url(self, url, config=None, anon=True):
         if not config:

@@ -198,6 +198,7 @@ Examples can be found [here](EXAMPLES.md)
 ### Image
 
 * `get_image(image_id)`
+* `upload_from_file(file, config=None, anon=True)`
 * `upload_from_path(path, config=None, anon=True)`
 * `upload_from_url(url, config=None, anon=True)`
 * `delete_image(image_id)`
