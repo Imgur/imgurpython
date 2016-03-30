@@ -580,10 +580,13 @@ class ImgurClient(object):
         return Image(image)
 
     def upload_from_path(self, path, config=None, anon=True):
+        with open(path, 'rb') as fd:
+            self.upload(fd, config, anon)
+
+    def upload(self, fd, config=None, anon=True):
         if not config:
             config = dict()
 
-        fd = open(path, 'rb')
         contents = fd.read()
         b64 = base64.b64encode(contents)
         data = {
@@ -591,7 +594,6 @@ class ImgurClient(object):
             'type': 'base64',
         }
         data.update({meta: config[meta] for meta in set(self.allowed_image_fields).intersection(config.keys())})
-        fd.close()
         
         return self.make_request('POST', 'upload', data, anon)
 
