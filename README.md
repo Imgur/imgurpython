@@ -118,6 +118,92 @@ Examples
 ------------
 Examples can be found [here](EXAMPLES.md)
 
+### Upload Image
+
+#### Upload from URL
+In this example, upload an image which is a URL
+
+```python
+image = client.upload_from_url('https://scontent-a-lga.xx.fbcdn.net/hphotos-xfp1/v/t1.0-9/10405254_855764424482474_6812608353091007109_n.jpg?oh=26f230eca9e55dde4021e0d11e3ccef0&oe=54D92A21')
+print image
+
+```
+**Output**
+
+    {u'account_url': None, u'deletehash': u'Nxrdpf7c6HZq5Zh', u'description': None, u'name': u'', u'title': None, u'section': None, u'views': 0, u'favorite': False, u'datetime': 1416694646, u'height': 852, u'width': 600, u'bandwidth': 0, u'nsfw': None, u'vote': None, u'link': u'http://i.imgur.com/iU03DTq.jpg', u'animated': False, u'type': u'image/jpeg', u'id': u'iU03DTq', u'size': 79631}
+    
+
+#### Upload from Path
+In this example, upload an image which is a file
+
+```python
+image = client.upload_from_path('/tmp/aW0nDYd_460s.jpg')
+print image
+
+```
+
+**Output**
+
+    {u'account_url': None, u'deletehash': u'JuWydSGOZesuZSv', u'description': None, u'name': u'', u'title': None, u'section': None, u'views': 0, u'favorite': False, u'datetime': 1416695070, u'height': 451, u'width': 460, u'bandwidth': 0, u'nsfw': None, u'vote': None, u'link': u'http://i.imgur.com/Mcp6byc.jpg', u'animated': False, u'type': u'image/jpeg', u'id': u'Mcp6byc', u'size': 47306}
+
+### Album
+
+If you want to deal with anonymous albums, the following authentication is sufficient:
+
+    client = ImgurClient(client_id, client_secret)
+
+Else:
+
+    client = ImgurClient(client_id, client_secret, access_token, refresh_token)
+
+Following examples will assume you have authenticated with an account.
+
+#### Create Album
+Create a new album. To add images to an album during creation, you need to be authenticated with an account. Creating an album without authenticating an account will create an anonymous album which is not tied to an account. Adding images to an anonymous album is only available during image uploading. 
+
+```python
+fields = {'title' : 'Barcelona', 'description' : 'Test album for Imgur API Examples', 'layout' : 'vertical'}
+
+print client.create_album(fields)
+```
+
+**Output**
+
+    {u'deletehash': u'IctCbuL0f9VcmBh', u'id': u'9SsDk'}
+
+#### Add Images to Album
+
+```python
+image1 =  client.upload_from_url('http://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/450px-FC_Barcelona_%28crest%29.svg.png', anon=False)
+image1_id = image1['id']
+
+image2 =  client.upload_from_url('http://arxiu.fcbarcelona.cat/web/downloads/sala_premsa/fotos/Plantilla0809/FCBarcelona0809.jpg')
+image2_id = image2['id']
+
+print client.album_add_images('9SsDk', [image1_id, image2_id])
+
+```
+
+**Output**
+
+    True
+    
+#### Get Album
+
+```python
+album =  client.get_album('9SsDk')
+print album.title
+print album.link
+print album.account_url
+```
+
+**Output**
+  
+    Barcelona
+	http://imgur.com/a/9SsDk
+	ue90
+
+
 ## ImgurClient Functions
 
 ### Account
