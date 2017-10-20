@@ -1,20 +1,21 @@
 import base64
 import requests
-from .imgur.models.tag import Tag
-from .imgur.models.album import Album
-from .imgur.models.image import Image
-from .imgur.models.account import Account
-from .imgur.models.comment import Comment
-from .imgur.models.tag_vote import TagVote
+
 from .helpers.error import ImgurClientError
-from .helpers.format import build_notification
-from .helpers.format import format_comment_tree
-from .helpers.format import build_notifications
-from .imgur.models.conversation import Conversation
 from .helpers.error import ImgurClientRateLimitError
 from .helpers.format import build_gallery_images_and_albums
-from .imgur.models.custom_gallery import CustomGallery
+from .helpers.format import build_notification
+from .helpers.format import build_notifications
+from .helpers.format import format_comment_tree
+from .imgur.models.account import Account
 from .imgur.models.account_settings import AccountSettings
+from .imgur.models.album import Album
+from .imgur.models.comment import Comment
+from .imgur.models.conversation import Conversation
+from .imgur.models.custom_gallery import CustomGallery
+from .imgur.models.image import Image
+from .imgur.models.tag import Tag
+from .imgur.models.tag_vote import TagVote
 
 API_URL = 'https://api.imgur.com/'
 MASHAPE_URL = 'https://imgur-apiv3.p.mashape.com/'
@@ -22,20 +23,27 @@ MASHAPE_URL = 'https://imgur-apiv3.p.mashape.com/'
 
 class AuthWrapper(object):
     def __init__(self, access_token, refresh_token, client_id, client_secret):
-        self.current_access_token = access_token
+        self._current_access_token = access_token
 
         if refresh_token is None:
             raise TypeError('A refresh token must be provided')
 
-        self.refresh_token = refresh_token
+        self._refresh_token = refresh_token
         self.client_id = client_id
         self.client_secret = client_secret
 
-    def get_refresh_token(self):
-        return self.refresh_token
+    @property
+    def refresh_token(self):
+        return self._refresh_token
 
-    def get_current_access_token(self):
-        return self.current_access_token
+    @property
+    def current_access_token(self):
+        return self._current_access_token
+
+    @current_access_token.setter
+    def current_access_token(self, _current_access_token):
+        self._current_access_token = _current_access_token
+
 
     def refresh(self):
         data = {
@@ -74,7 +82,7 @@ class ImgurClient(object):
     }
 
     def __init__(self, client_id, client_secret, access_token=None, refresh_token=None, mashape_key=None):
-        self.client_id = client_id
+        self._client_id = client_id
         self.client_secret = client_secret
         self.auth = None
         self.mashape_key = mashape_key
@@ -87,8 +95,9 @@ class ImgurClient(object):
     def set_user_auth(self, access_token, refresh_token):
         self.auth = AuthWrapper(access_token, refresh_token, self.client_id, self.client_secret)
 
-    def get_client_id(self):
-        return self.client_id
+    @property
+    def client_id(self):
+        return self._client_id
 
     def get_credits(self):
         return self.make_request('GET', 'credits', None, True)
@@ -110,9 +119,9 @@ class ImgurClient(object):
             if self.client_id is None:
                 raise ImgurClientError('Client credentials not found!')
             else:
-                headers['Authorization'] = 'Client-ID %s' % self.get_client_id()
+                headers['Authorization'] = 'Client-ID %s' % self.client_id
         else:
-            headers['Authorization'] = 'Bearer %s' % self.auth.get_current_access_token()
+            headers['Authorization'] = 'Bearer %s' % self.auth.current_access_token
 
         if self.mashape_key is not None:
             headers['X-Mashape-Key'] = self.mashape_key
