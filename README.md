@@ -29,7 +29,7 @@ The best way to reach out to Imgur for API support is emailing us at api@imgur.c
 Installation
 ------------
 
-    pip install imgurpython
+    pip install gimgurpython
 
 Library Usage
 ------------
@@ -40,7 +40,7 @@ To use the client from a strictly anonymous context (no actions on behalf of a u
 
 ```python
 
-from imgurpython import ImgurClient
+from gimgurpython import ImgurClient
 
 client_id = 'YOUR CLIENT ID'
 client_secret = 'YOUR CLIENT SECRET'
