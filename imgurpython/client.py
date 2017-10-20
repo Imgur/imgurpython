@@ -552,9 +552,9 @@ class ImgurClient(object):
         response = self.make_request('GET', 'gallery/%s' % item_id)
         return build_gallery_images_and_albums(response)
 
-    def report_gallery_item(self, item_id):
+    def report_gallery_item(self, item_id, reason):
         self.logged_in()
-        return self.make_request('POST', 'gallery/%s/report' % item_id)
+        return self.make_request('POST', 'gallery/%s/report' % item_id, {'reason': reason})
 
     def gallery_item_vote(self, item_id, vote='up'):
         self.logged_in()
