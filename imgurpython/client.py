@@ -283,6 +283,10 @@ class ImgurClient(object):
         images = self.make_request('GET', 'album/%s/images' % album_id)
         return [Image(image) for image in images]
 
+    def get_album_image(self, album_id, image_id):
+        image = self.make_request('GET', 'album/%s/image/%s' % (album_id, image_id))
+        return Image(image)
+
     def create_album(self, fields):
         post_data = {field: fields[field] for field in set(self.allowed_album_fields).intersection(fields.keys())}
 
