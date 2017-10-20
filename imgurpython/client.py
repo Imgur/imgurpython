@@ -286,10 +286,10 @@ class ImgurClient(object):
     def create_album(self, fields):
         post_data = {field: fields[field] for field in set(self.allowed_album_fields).intersection(fields.keys())}
 
-        if 'ids' in post_data:
-            self.logged_in()
-
-        return self.make_request('POST', 'album', data=post_data)
+        if self.auth is None:
+            return self.make_request('POST', 'album', post_data, True)
+        else:
+            return self.make_request('POST', 'album', post_data)
 
     def update_album(self, album_id, fields):
         post_data = {field: fields[field] for field in set(self.allowed_album_fields).intersection(fields.keys())}
@@ -594,7 +594,7 @@ class ImgurClient(object):
             'type': 'base64',
         }
         data.update({meta: config[meta] for meta in set(self.allowed_image_fields).intersection(config.keys())})
-        
+
         return self.make_request('POST', 'upload', data, anon)
 
     def upload_from_url(self, url, config=None, anon=True):
