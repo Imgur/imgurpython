@@ -3,10 +3,10 @@
 imgurpython
 ===========
 
-A Python client for the [Imgur API](http://api.imgur.com/). It can be used to
+A Python client for the [Imgur API](https://api.imgur.com/). It can be used to
 interact with the Imgur API in your projects.
 
-You must [register](http://api.imgur.com/oauth2/addclient) your client with the Imgur API, and provide the Client-ID to
+You must [register](https://api.imgur.com/oauth2/addclient) your client with the Imgur API, and provide the Client-ID to
 make *any* request to the API (see the [Authentication](https://api.imgur.com/#authentication) note). If you want to
 perform actions on accounts, the user will have to authorize your application through OAuth2.
 
@@ -14,7 +14,7 @@ Requirements
 ------------
 
 - Python >= 2.7
-- [requests](http://docs.python-requests.org/en/latest/user/install/)
+- [requests](https://docs.python-requests.org/en/latest/user/install/)
 
 Imgur API Documentation
 -----------------------
@@ -114,7 +114,7 @@ To view client and user credit information, use the `credits` attribute of `Imgu
 * ClientLimit
 * ClientRemaining
 
-For more information about rate-limiting, please see the note in our [docs](http://api.imgur.com/#limits)!
+For more information about rate-limiting, please see the note in our [docs](https://api.imgur.com/#limits)!
 
 Examples
 ------------
@@ -233,4 +233,3 @@ Imgur entry points
 | imgur.com/a/{album_id}              | album                          |
 | imgur.com/a/{album_id}#{image_id}   | single image from an album     |
 | imgur.com/gallery/{gallery_post_id} | gallery                        |
-
