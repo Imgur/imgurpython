@@ -1,4 +1,3 @@
-import base64
 import requests
 from .imgur.models.tag import Tag
 from .imgur.models.album import Album
@@ -129,6 +128,9 @@ class ImgurClient(object):
 
         if method in ('delete', 'get'):
             response = method_to_call(url, headers=header, params=data, data=data)
+        elif method == 'post' and data.get('type', None) == 'file':
+            files = {'image': data.pop('image')}
+            response = method_to_call(url, headers=header, data=data, files=files)
         else:
             response = method_to_call(url, headers=header, data=data)
 
@@ -137,6 +139,9 @@ class ImgurClient(object):
             header = self.prepare_headers()
             if method in ('delete', 'get'):
                 response = method_to_call(url, headers=header, params=data, data=data)
+            elif method == 'post' and data.get('type', None) == 'file':
+                files = {'image': data.pop('image')}
+                response = method_to_call(url, headers=header, data=data, files=files)
             else:
                 response = method_to_call(url, headers=header, data=data)
 
@@ -587,12 +592,11 @@ class ImgurClient(object):
         if not config:
             config = dict()
 
-        contents = fd.read()
-        b64 = base64.b64encode(contents)
         data = {
-            'image': b64,
-            'type': 'base64',
+            'image': fd,
+            'type': 'file',
         }
+        
         data.update({meta: config[meta] for meta in set(self.allowed_image_fields).intersection(config.keys())})
         
         return self.make_request('POST', 'upload', data, anon)
