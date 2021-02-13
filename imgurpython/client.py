@@ -140,13 +140,14 @@ class ImgurClient(object):
             else:
                 response = method_to_call(url, headers=header, data=data)
 
-        self.credits = {
-            'UserLimit': response.headers.get('X-RateLimit-UserLimit'),
-            'UserRemaining': response.headers.get('X-RateLimit-UserRemaining'),
-            'UserReset': response.headers.get('X-RateLimit-UserReset'),
-            'ClientLimit': response.headers.get('X-RateLimit-ClientLimit'),
-            'ClientRemaining': response.headers.get('X-RateLimit-ClientRemaining')
-        }
+        if response.headers.get('X-RateLimit-UserLimit') is not None:
+            self.credits = {
+                'UserLimit': int(response.headers.get('X-RateLimit-UserLimit')),
+                'UserRemaining': int(response.headers.get('X-RateLimit-UserRemaining')),
+                'UserReset': int(response.headers.get('X-RateLimit-UserReset')),
+                'ClientLimit': int(response.headers.get('X-RateLimit-ClientLimit')),
+                'ClientRemaining': int(response.headers.get('X-RateLimit-ClientRemaining'))
+            }
 
         # Rate-limit check
         if response.status_code == 429:
