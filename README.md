@@ -95,9 +95,9 @@ Error types
 ```python
 from imgurpython.helpers.error import ImgurClientError
 
-try
+try:
     ...
-except ImgurClientError as e
+except ImgurClientError as e:
     print(e.error_message)
     print(e.status_code)
 ```
